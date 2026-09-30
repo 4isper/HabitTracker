@@ -141,6 +141,31 @@ export function HabitDetailsScreen({
 
       <Pressable
         style={[
+          styles.editButton,
+          {
+            backgroundColor: theme.colors.surfaceAlt,
+          },
+        ]}
+        onPress={() =>
+          navigation.navigate('EditHabit', {
+            habitId: habit.id,
+          })
+        }
+      >
+        <Text
+          style={[
+            styles.editButtonText,
+            {
+              color: theme.colors.text,
+            },
+          ]}
+        >
+          Редактировать
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={[
           styles.deleteButton,
           {
             backgroundColor: theme.colors.danger,
@@ -257,6 +282,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   toggleButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  editButton: {
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  editButtonText: {
     fontSize: 16,
     fontWeight: '700',
   },

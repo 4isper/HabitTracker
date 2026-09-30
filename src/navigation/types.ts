@@ -4,4 +4,7 @@ export type RootStackParamList = {
   HabitDetails: {
     habitId: string;
   };
+  EditHabit: {
+    habitId: string;
+  };
 };

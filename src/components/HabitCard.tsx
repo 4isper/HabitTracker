@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { Icon } from './Icon';
 import { useAppTheme } from '../theme/appTheme';
 
 import type { Habit } from '../types/habit';
@@ -80,7 +81,12 @@ export function HabitCard({
         hitSlop={10}
       >
         {completedToday ? (
-          <Text style={styles.checkmark}>✓</Text>
+          <Icon
+            name="check"
+            color={theme.colors.primaryText}
+            size={18}
+            strokeWidth={3}
+          />
         ) : null}
       </Pressable>
     </Pressable>
@@ -128,9 +134,5 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  checkmark: {
-    color: '#ffffff',
-    fontWeight: '700',
   },
 });

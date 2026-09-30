@@ -19,3 +19,14 @@ export type AddHabitResult = {
   success: boolean;
   error?: AddHabitError;
 };
+
+export type UpdateHabitInput = CreateHabitInput;
+
+export type UpdateHabitError = AddHabitError | 'notFound';
+
+export type UpdateHabitResult = {
+  success: boolean;
+  error?: UpdateHabitError;
+};
+
+export type HabitFilter = 'all' | 'completed' | 'pending';

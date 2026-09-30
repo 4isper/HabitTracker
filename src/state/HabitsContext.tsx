@@ -13,6 +13,8 @@ import type {
   AddHabitResult,
   CreateHabitInput,
   Habit,
+  UpdateHabitInput,
+  UpdateHabitResult,
 } from '../types/habit';
 
 import { loadHabits, saveHabits } from '../storage/habitsStorage';
@@ -24,8 +26,9 @@ type HabitsContextValue = {
   addHabit: (input: CreateHabitInput) => AddHabitResult;
   toggleToday: (habitId: string) => void;
   deleteHabit: (habitId: string) => void;
-  isDuplicateName: (name: string) => boolean;
+  isDuplicateName: (name: string, excludeId?: string) => boolean;
   getHabitById: (habitId: string) => Habit | undefined;
+  updateHabit: (habitId: string, input: UpdateHabitInput) => UpdateHabitResult;
 };
 
 const HabitsContext = createContext<HabitsContextValue | undefined>(undefined);
@@ -41,7 +44,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
   }, [habits]);
 
   const isDuplicateName = useCallback(
-    (name: string) => {
+    (name: string, excludeId?: string) => {
       const normalizedName = name.trim().toLowerCase();
 
       if (!normalizedName) {
@@ -49,7 +52,9 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       }
 
       return habits.some(
-        (habit) => habit.name.trim().toLowerCase() === normalizedName
+        (habit) =>
+          habit.id !== excludeId &&
+          habit.name.trim().toLowerCase() === normalizedName
       );
     },
     [habits]
@@ -89,6 +94,55 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       };
     },
     [isDuplicateName]
+  );
+
+  const updateHabit = useCallback(
+    (habitId: string, input: UpdateHabitInput): UpdateHabitResult => {
+      const habitExists = habits.some((habit) => habit.id === habitId);
+
+      if (!habitExists) {
+        return {
+          success: false,
+          error: 'notFound',
+        };
+      }
+
+      const name = input.name.trim();
+
+      if (!name) {
+        return {
+          success: false,
+          error: 'empty',
+        };
+      }
+
+      if (isDuplicateName(name, habitId)) {
+        return {
+          success: false,
+          error: 'duplicate',
+        };
+      }
+
+      setHabits((prevHabits) =>
+        prevHabits.map((habit) => {
+          if (habit.id !== habitId) {
+            return habit;
+          }
+
+          return {
+            ...habit,
+            name,
+            emoji: input.emoji?.trim() || undefined,
+            color: input.color || undefined,
+          };
+        })
+      );
+
+      return {
+        success: true,
+      };
+    },
+    [habits, isDuplicateName]
   );
 
   const toggleToday = useCallback((habitId: string) => {
@@ -132,6 +186,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       deleteHabit,
       isDuplicateName,
       getHabitById,
+      updateHabit,
     }),
     [
       habits,
@@ -141,6 +196,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       deleteHabit,
       isDuplicateName,
       getHabitById,
+      updateHabit,
     ]
   );
 

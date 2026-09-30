@@ -1,11 +1,13 @@
 import ChevronLeft from 'lucide-react-native/icons/chevron-left';
 import Plus from 'lucide-react-native/icons/plus';
+import Check from 'lucide-react-native/icons/check';
 
 import type { LucideIcon } from 'lucide-react-native';
 
 const ICONS = {
   back: ChevronLeft,
   add: Plus,
+  check: Check,
 } satisfies Record<string, LucideIcon>;
 
 export type IconName = keyof typeof ICONS;

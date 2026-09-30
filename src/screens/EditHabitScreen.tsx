@@ -8,16 +8,34 @@ import { useHabits } from '../state/HabitsContext';
 import type { CreateHabitInput } from '../types/habit';
 import type { RootStackParamList } from '../navigation/types';
 
-type AddHabitScreenProps = NativeStackScreenProps<
+type EditHabitScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'AddHabit'
+  'EditHabit'
 >;
 
-export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
-  const { addHabit } = useHabits();
+export function EditHabitScreen({
+  route,
+  navigation,
+}: EditHabitScreenProps) {
+  const { habitId } = route.params;
+
+  const { getHabitById, updateHabit } = useHabits();
+
+  const habit = getHabitById(habitId);
+
+  if (!habit) {
+    return (
+      <Screen>
+        <ScreenHeader
+          title="Привычка не найдена"
+          onBack={() => navigation.goBack()}
+        />
+      </Screen>
+    );
+  }
 
   const handleSubmit = (input: CreateHabitInput) => {
-    const result = addHabit(input);
+    const result = updateHabit(habitId, input);
 
     if (result.success) {
       navigation.goBack();
@@ -29,12 +47,17 @@ export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
   return (
     <Screen>
       <ScreenHeader
-        title="Новая привычка"
+        title="Редактировать привычку"
         onBack={() => navigation.goBack()}
       />
 
       <HabitForm
-        submitLabel="Добавить"
+        initialValues={{
+          name: habit.name,
+          emoji: habit.emoji,
+          color: habit.color,
+        }}
+        submitLabel="Сохранить"
         onSubmit={handleSubmit}
         onCancel={() => navigation.goBack()}
       />

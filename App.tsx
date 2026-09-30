@@ -11,6 +11,7 @@ import { HabitsProvider } from './src/state/HabitsContext';
 
 import { HomeScreen } from './src/screens/HomeScreen';
 import { AddHabitScreen } from './src/screens/AddHabitScreen';
+import { EditHabitScreen } from './src/screens/EditHabitScreen';
 import { HabitDetailsScreen } from './src/screens/HabitDetailsScreen';
 
 import { useAppTheme } from './src/theme/appTheme';
@@ -64,6 +65,14 @@ function App() {
             component={HabitDetailsScreen}
             options={{
               title: 'История привычки',
+            }}
+          />
+
+          <Stack.Screen
+            name="EditHabit"
+            component={EditHabitScreen}
+            options={{
+              title: 'Редактировать привычку',
             }}
           />
         </Stack.Navigator>
