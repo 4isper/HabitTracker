@@ -1,3 +1,5 @@
+import { StatusBar } from 'react-native';
+
 import {
   DarkTheme,
   DefaultTheme,
@@ -34,8 +36,13 @@ function App() {
 
   return (
     <HabitsProvider>
+      <StatusBar barStyle={theme.dark ? 'light-content' : 'dark-content'} />
+
       <NavigationContainer theme={navigationTheme}>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{ headerShown: false }}
+        >
           <Stack.Screen
             name="Home"
             component={HomeScreen}

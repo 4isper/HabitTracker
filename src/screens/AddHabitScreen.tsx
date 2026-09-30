@@ -12,7 +12,10 @@ import {
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { Screen } from '../components/Screen';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { useHabits } from '../state/HabitsContext';
+import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 
 import type { RootStackParamList } from '../navigation/types';
@@ -66,177 +69,180 @@ export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
 
   return (
     <KeyboardAvoidingView
-      style={[
-        styles.flex,
-        {
-          backgroundColor: theme.colors.background,
-        },
-      ]}
+      style={styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
-      >
-        <Text
-          style={[
-            styles.label,
-            {
-              color: theme.colors.textMuted,
-            },
-          ]}
-        >
-          Название *
-        </Text>
-
-        <TextInput
-          style={[
-            styles.input,
-            {
-              backgroundColor: theme.colors.inputBackground,
-              borderColor: theme.colors.border,
-              color: theme.colors.text,
-            },
-          ]}
-          value={name}
-          onChangeText={setName}
-          placeholder="Например: пить воду"
-          placeholderTextColor={theme.colors.textMuted}
+      <Screen>
+        <ScreenHeader
+          title="Новая привычка"
+          onBack={() => navigation.goBack()}
         />
 
-        {formError ? (
+        <ScrollView
+          style={styles.scroll}
+          contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
+        >
           <Text
             style={[
-              styles.error,
+              styles.label,
               {
-                color: theme.colors.danger,
+                color: theme.colors.textMuted,
               },
             ]}
           >
-            {formError}
+            Название *
           </Text>
-        ) : null}
 
-        <Text
-          style={[
-            styles.label,
-            {
-              color: theme.colors.textMuted,
-            },
-          ]}
-        >
-          Иконка (необязательно)
-        </Text>
-
-        <View style={styles.optionsRow}>
-          {EMOJI_OPTIONS.map((option) => {
-            const isActive = emoji === option;
-
-            return (
-              <Pressable
-                key={option}
-                style={[
-                  styles.emojiOption,
-                  {
-                    backgroundColor: theme.colors.surface,
-                    borderColor: theme.colors.border,
-                  },
-                  isActive && {
-                    borderColor: theme.colors.primary,
-                    backgroundColor: theme.colors.surfaceAlt,
-                  },
-                ]}
-                onPress={() =>
-                  setEmoji((prevEmoji) =>
-                    prevEmoji === option ? undefined : option
-                  )
-                }
-              >
-                <Text style={styles.emojiText}>{option}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Text
-          style={[
-            styles.label,
-            {
-              color: theme.colors.textMuted,
-            },
-          ]}
-        >
-          Цвет (необязательно)
-        </Text>
-
-        <View style={styles.optionsRow}>
-          {COLOR_OPTIONS.map((option) => {
-            const isActive = color === option;
-
-            return (
-              <Pressable
-                key={option}
-                style={[
-                  styles.colorOption,
-                  {
-                    backgroundColor: option,
-                  },
-                  isActive && {
-                    borderColor: theme.colors.text,
-                  },
-                ]}
-                onPress={() =>
-                  setColor((prevColor) =>
-                    prevColor === option ? undefined : option
-                  )
-                }
-              />
-            );
-          })}
-        </View>
-
-        <Pressable
-          style={[
-            styles.submitButton,
-            {
-              backgroundColor: theme.colors.primary,
-            },
-          ]}
-          onPress={handleSubmit}
-        >
-          <Text
+          <TextInput
             style={[
-              styles.submitButtonText,
+              styles.input,
               {
-                color: theme.colors.primaryText,
-              },
-            ]}
-          >
-            Добавить
-          </Text>
-        </Pressable>
-
-        <Pressable
-          style={[
-            styles.cancelButton,
-            {
-              backgroundColor: theme.colors.surfaceAlt,
-            },
-          ]}
-          onPress={() => navigation.goBack()}
-        >
-          <Text
-            style={[
-              styles.cancelButtonText,
-              {
+                backgroundColor: theme.colors.inputBackground,
+                borderColor: theme.colors.border,
                 color: theme.colors.text,
               },
             ]}
+            value={name}
+            onChangeText={setName}
+            placeholder="Например: пить воду"
+            placeholderTextColor={theme.colors.textMuted}
+          />
+
+          {formError ? (
+            <Text
+              style={[
+                styles.error,
+                {
+                  color: theme.colors.danger,
+                },
+              ]}
+            >
+              {formError}
+            </Text>
+          ) : null}
+
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.colors.textMuted,
+              },
+            ]}
           >
-            Отмена
+            Иконка (необязательно)
           </Text>
-        </Pressable>
-      </ScrollView>
+
+          <View style={styles.optionsRow}>
+            {EMOJI_OPTIONS.map(option => {
+              const isActive = emoji === option;
+
+              return (
+                <Pressable
+                  key={option}
+                  style={[
+                    styles.emojiOption,
+                    {
+                      backgroundColor: theme.colors.surface,
+                      borderColor: theme.colors.border,
+                    },
+                    isActive && {
+                      borderColor: theme.colors.primary,
+                      backgroundColor: theme.colors.surfaceAlt,
+                    },
+                  ]}
+                  onPress={() =>
+                    setEmoji(prevEmoji =>
+                      prevEmoji === option ? undefined : option,
+                    )
+                  }
+                >
+                  <Text style={styles.emojiText}>{option}</Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <Text
+            style={[
+              styles.label,
+              {
+                color: theme.colors.textMuted,
+              },
+            ]}
+          >
+            Цвет (необязательно)
+          </Text>
+
+          <View style={styles.optionsRow}>
+            {COLOR_OPTIONS.map(option => {
+              const isActive = color === option;
+
+              return (
+                <Pressable
+                  key={option}
+                  style={[
+                    styles.colorOption,
+                    {
+                      backgroundColor: option,
+                    },
+                    isActive && {
+                      borderColor: theme.colors.text,
+                    },
+                  ]}
+                  onPress={() =>
+                    setColor(prevColor =>
+                      prevColor === option ? undefined : option,
+                    )
+                  }
+                />
+              );
+            })}
+          </View>
+
+          <Pressable
+            style={[
+              styles.submitButton,
+              {
+                backgroundColor: theme.colors.primary,
+              },
+            ]}
+            onPress={handleSubmit}
+          >
+            <Text
+              style={[
+                styles.submitButtonText,
+                {
+                  color: theme.colors.primaryText,
+                },
+              ]}
+            >
+              Добавить
+            </Text>
+          </Pressable>
+
+          <Pressable
+            style={[
+              styles.cancelButton,
+              {
+                backgroundColor: theme.colors.surfaceAlt,
+              },
+            ]}
+            onPress={() => navigation.goBack()}
+          >
+            <Text
+              style={[
+                styles.cancelButtonText,
+                {
+                  color: theme.colors.text,
+                },
+              ]}
+            >
+              Отмена
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </Screen>
     </KeyboardAvoidingView>
   );
 }
@@ -245,30 +251,32 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
-  container: {
-    padding: 20,
-    paddingBottom: 60,
+  scroll: {
+    flex: 1,
+  },
+  content: {
+    paddingBottom: spacing.huge + spacing.xxl,
   },
   label: {
     fontSize: 14,
     fontWeight: '600',
-    marginBottom: 8,
+    marginBottom: spacing.sm,
   },
   input: {
     borderWidth: 1,
     borderRadius: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingHorizontal: spacing.md + 2,
+    paddingVertical: spacing.md,
     fontSize: 16,
-    marginBottom: 20,
+    marginBottom: spacing.xl,
   },
   error: {
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   optionsRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginBottom: 24,
+    marginBottom: spacing.xxl,
   },
   emojiOption: {
     width: 48,

@@ -2,8 +2,11 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { Screen } from '../components/Screen';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { useHabits } from '../state/HabitsContext';
 import { formatDateForDisplay, getTodayKey } from '../utils/date';
+import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 
 import type { RootStackParamList } from '../navigation/types';
@@ -26,46 +29,12 @@ export function HabitDetailsScreen({
 
   if (!habit) {
     return (
-      <View
-        style={[
-          styles.container,
-          {
-            backgroundColor: theme.colors.background,
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.notFoundText,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-        >
-          Привычка не найдена
-        </Text>
-
-        <Pressable
-          style={[
-            styles.backButton,
-            {
-              backgroundColor: theme.colors.primary,
-            },
-          ]}
-          onPress={() => navigation.goBack()}
-        >
-          <Text
-            style={[
-              styles.backButtonText,
-              {
-                color: theme.colors.primaryText,
-              },
-            ]}
-          >
-            Назад
-          </Text>
-        </Pressable>
-      </View>
+      <Screen>
+        <ScreenHeader
+          title="Привычка не найдена"
+          onBack={() => navigation.goBack()}
+        />
+      </Screen>
     );
   }
 
@@ -76,14 +45,12 @@ export function HabitDetailsScreen({
   const history = [...habit.completedDates].sort((a, b) => b.localeCompare(a));
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.background,
-        },
-      ]}
-    >
+    <Screen>
+      <ScreenHeader
+        title="История привычки"
+        onBack={() => navigation.goBack()}
+      />
+
       <View
         style={[
           styles.headerCard,
@@ -163,9 +130,10 @@ export function HabitDetailsScreen({
       </Text>
 
       <FlatList
+        style={styles.historyList}
         data={history}
-        keyExtractor={(item) => item}
-        contentContainerStyle={styles.historyList}
+        keyExtractor={item => item}
+        contentContainerStyle={styles.historyListContent}
         renderItem={({ item }) => (
           <View
             style={[
@@ -212,33 +180,17 @@ export function HabitDetailsScreen({
           </Text>
         }
       />
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  notFoundText: {
-    fontSize: 18,
-    marginBottom: 20,
-  },
-  backButton: {
-    borderRadius: 12,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  backButtonText: {
-    fontWeight: '600',
-  },
   headerCard: {
     borderRadius: 16,
     borderWidth: 1,
     borderLeftWidth: 4,
-    padding: 20,
-    marginBottom: 16,
+    padding: spacing.xl,
+    marginBottom: spacing.lg,
   },
   emoji: {
     fontSize: 32,
@@ -260,7 +212,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: spacing.xxl,
   },
   toggleButtonText: {
     fontSize: 16,
@@ -269,16 +221,19 @@ const styles = StyleSheet.create({
   historyTitle: {
     fontSize: 18,
     fontWeight: '700',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   historyList: {
-    paddingBottom: 40,
+    flex: 1,
+  },
+  historyListContent: {
+    paddingBottom: spacing.huge,
   },
   historyItem: {
     borderRadius: 12,
     borderWidth: 1,
-    padding: 16,
-    marginBottom: 10,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

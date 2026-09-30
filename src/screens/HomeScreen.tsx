@@ -3,8 +3,13 @@ import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { HabitCard } from '../components/HabitCard';
+import { CircleButton } from '../components/CircleButton';
+import { Icon } from '../components/Icon';
+import { Screen } from '../components/Screen';
+import { ScreenHeader } from '../components/ScreenHeader';
 import { useHabits } from '../state/HabitsContext';
 import { getTodayKey } from '../utils/date';
+import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 
 import type { Habit } from '../types/habit';
@@ -36,47 +41,21 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: theme.colors.background,
-        },
-      ]}
-    >
-      <View style={styles.headerRow}>
-        <Text
-          style={[
-            styles.title,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-        >
-          Мои привычки
-        </Text>
-
-        <Pressable
-          style={[
-            styles.addButton,
-            {
+    <Screen>
+      <ScreenHeader
+        title="Мои привычки"
+        right={
+          <CircleButton
+            accessibilityLabel="Добавить привычку"
+            onPress={() => navigation.navigate('AddHabit')}
+            style={{
               backgroundColor: theme.colors.primary,
-            },
-          ]}
-          onPress={() => navigation.navigate('AddHabit')}
-        >
-          <Text
-            style={[
-              styles.addButtonText,
-              {
-                color: theme.colors.primaryText,
-              },
-            ]}
+            }}
           >
-            +
-          </Text>
-        </Pressable>
-      </View>
+            <Icon name="add" color={theme.colors.primaryText} />
+          </CircleButton>
+        }
+      />
 
       {saveError ? (
         <Text
@@ -92,8 +71,9 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
       ) : null}
 
       <FlatList
+        style={styles.list}
         data={habits}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
         ListEmptyComponent={
@@ -143,45 +123,22 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
           </View>
         }
       />
-    </View>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-  },
-  addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  addButtonText: {
-    fontSize: 22,
-    fontWeight: '700',
-    lineHeight: 24,
-  },
   error: {
     marginBottom: 12,
   },
+  list: {
+    flex: 1,
+  },
   listContent: {
-    paddingBottom: 40,
+    paddingBottom: spacing.huge,
   },
   emptyState: {
-    marginTop: 80,
+    marginTop: spacing.huge * 2,
     alignItems: 'center',
   },
   emptyTitle: {
