@@ -1,45 +1,68 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
 import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+} from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { HabitsProvider } from './src/state/HabitsContext';
+
+import { HomeScreen } from './src/screens/HomeScreen';
+import { AddHabitScreen } from './src/screens/AddHabitScreen';
+import { HabitDetailsScreen } from './src/screens/HabitDetailsScreen';
+
+import { useAppTheme } from './src/theme/appTheme';
+
+import type { RootStackParamList } from './src/navigation/types';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const theme = useAppTheme();
+
+  const navigationTheme = {
+    ...(theme.dark ? DarkTheme : DefaultTheme),
+    colors: {
+      ...(theme.dark ? DarkTheme.colors : DefaultTheme.colors),
+      primary: theme.colors.primary,
+      background: theme.colors.background,
+      card: theme.colors.surface,
+      text: theme.colors.text,
+      border: theme.colors.border,
+    },
+  };
 
   return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
+    <HabitsProvider>
+      <NavigationContainer theme={navigationTheme}>
+        <Stack.Navigator initialRouteName="Home">
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{
+              title: 'Привычки',
+            }}
+          />
+
+          <Stack.Screen
+            name="AddHabit"
+            component={AddHabitScreen}
+            options={{
+              title: 'Новая привычка',
+            }}
+          />
+
+          <Stack.Screen
+            name="HabitDetails"
+            component={HabitDetailsScreen}
+            options={{
+              title: 'История привычки',
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </HabitsProvider>
   );
 }
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
-
-  return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 export default App;
