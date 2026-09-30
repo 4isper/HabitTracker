@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import type { StyleProp, ViewStyle } from 'react-native';
 
@@ -22,13 +23,14 @@ export function ScreenHeader({
   style,
 }: ScreenHeaderProps) {
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={[styles.container, style]}>
       <View style={styles.side}>
         {onBack ? (
           <CircleButton
-            accessibilityLabel="Назад"
+            accessibilityLabel={t('common.back')}
             onPress={onBack}
             style={{
               backgroundColor: theme.colors.surfaceAlt,

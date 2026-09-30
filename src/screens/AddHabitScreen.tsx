@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { HabitForm } from '../components/HabitForm';
@@ -15,6 +17,7 @@ type AddHabitScreenProps = NativeStackScreenProps<
 
 export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
   const { addHabit } = useHabits();
+  const { t } = useTranslation();
 
   const handleSubmit = (input: CreateHabitInput) => {
     const result = addHabit(input);
@@ -29,12 +32,12 @@ export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
   return (
     <Screen>
       <ScreenHeader
-        title="Новая привычка"
+        title={t('nav.addHabit')}
         onBack={() => navigation.goBack()}
       />
 
       <HabitForm
-        submitLabel="Добавить"
+        submitLabel={t('common.add')}
         onSubmit={handleSubmit}
         onCancel={() => navigation.goBack()}
       />

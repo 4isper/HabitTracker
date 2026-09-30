@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
@@ -7,13 +8,13 @@ import type { HabitFilter } from '../types/habit';
 
 type FilterOption = {
   value: HabitFilter;
-  label: string;
+  labelKey: 'filter.all' | 'filter.completed' | 'filter.pending';
 };
 
 const OPTIONS: FilterOption[] = [
-  { value: 'all', label: 'Все' },
-  { value: 'completed', label: 'Выполнено' },
-  { value: 'pending', label: 'Не выполнено' },
+  { value: 'all', labelKey: 'filter.all' },
+  { value: 'completed', labelKey: 'filter.completed' },
+  { value: 'pending', labelKey: 'filter.pending' },
 ];
 
 type FilterTabsProps = {
@@ -24,6 +25,7 @@ type FilterTabsProps = {
 
 export function FilterTabs({ value, onChange, counts }: FilterTabsProps) {
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
@@ -57,7 +59,7 @@ export function FilterTabs({ value, onChange, counts }: FilterTabsProps) {
                 },
               ]}
             >
-              {option.label}
+              {t(option.labelKey)}
               {typeof count === 'number' ? ` · ${count}` : ''}
             </Text>
           </Pressable>

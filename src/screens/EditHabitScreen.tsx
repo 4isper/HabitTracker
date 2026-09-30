@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { HabitForm } from '../components/HabitForm';
@@ -20,6 +22,7 @@ export function EditHabitScreen({
   const { habitId } = route.params;
 
   const { getHabitById, updateHabit } = useHabits();
+  const { t } = useTranslation();
 
   const habit = getHabitById(habitId);
 
@@ -27,7 +30,7 @@ export function EditHabitScreen({
     return (
       <Screen>
         <ScreenHeader
-          title="Привычка не найдена"
+          title={t('common.notFoundTitle')}
           onBack={() => navigation.goBack()}
         />
       </Screen>
@@ -47,7 +50,7 @@ export function EditHabitScreen({
   return (
     <Screen>
       <ScreenHeader
-        title="Редактировать привычку"
+        title={t('nav.editHabit')}
         onBack={() => navigation.goBack()}
       />
 
@@ -57,7 +60,7 @@ export function EditHabitScreen({
           emoji: habit.emoji,
           color: habit.color,
         }}
-        submitLabel="Сохранить"
+        submitLabel={t('common.save')}
         onSubmit={handleSubmit}
         onCancel={() => navigation.goBack()}
       />

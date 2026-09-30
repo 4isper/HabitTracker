@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -19,24 +20,25 @@ import type { RootStackParamList } from '../navigation/types';
 
 type HomeScreenProps = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const EMPTY_FILTER_TITLES: Record<HabitFilter, { title: string; text: string }> = {
+const EMPTY_FILTER_KEYS = {
   all: {
-    title: 'Привычек пока нет',
-    text: 'Добавьте первую привычку, чтобы начать отслеживать прогресс.',
+    title: 'home.emptyAll.title',
+    text: 'home.emptyAll.text',
   },
   completed: {
-    title: 'Нет выполненных привычек',
-    text: 'Отметьте выполненную привычку, и она появится здесь.',
+    title: 'home.emptyCompleted.title',
+    text: 'home.emptyCompleted.text',
   },
   pending: {
-    title: 'Все привычки выполнены',
-    text: 'Все привычки на сегодня уже отмечены. Отличная работа!',
+    title: 'home.emptyPending.title',
+    text: 'home.emptyPending.text',
   },
-};
+} as const satisfies Record<HabitFilter, { title: string; text: string }>;
 
 export function HomeScreen({ navigation }: HomeScreenProps) {
   const { habits, toggleToday, saveError } = useHabits();
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   const [filter, setFilter] = useState<HabitFilter>('all');
 
@@ -89,10 +91,10 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
   return (
     <Screen>
       <ScreenHeader
-        title="Мои привычки"
+        title={t('home.title')}
         right={
           <CircleButton
-            accessibilityLabel="Добавить привычку"
+            accessibilityLabel={t('home.addHabitA11y')}
             onPress={() => navigation.navigate('AddHabit')}
             style={{
               backgroundColor: theme.colors.primary,
@@ -136,7 +138,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                   },
                 ]}
               >
-                {EMPTY_FILTER_TITLES.all.title}
+                {t(EMPTY_FILTER_KEYS.all.title)}
               </Text>
 
               <Text
@@ -147,7 +149,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                   },
                 ]}
               >
-                {EMPTY_FILTER_TITLES.all.text}
+                {t(EMPTY_FILTER_KEYS.all.text)}
               </Text>
 
               <Pressable
@@ -167,7 +169,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                     },
                   ]}
                 >
-                  Добавить привычку
+                  {t('home.addHabit')}
                 </Text>
               </Pressable>
             </View>
@@ -181,7 +183,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                   },
                 ]}
               >
-                {EMPTY_FILTER_TITLES[filter].title}
+                {t(EMPTY_FILTER_KEYS[filter].title)}
               </Text>
 
               <Text
@@ -192,7 +194,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                   },
                 ]}
               >
-                {EMPTY_FILTER_TITLES[filter].text}
+                {t(EMPTY_FILTER_KEYS[filter].text)}
               </Text>
 
               <Pressable
@@ -212,7 +214,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                     },
                   ]}
                 >
-                  Показать все
+                  {t('home.showAll')}
                 </Text>
               </Pressable>
             </View>

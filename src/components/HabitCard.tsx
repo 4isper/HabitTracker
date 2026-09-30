@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { Icon } from './Icon';
 import { useAppTheme } from '../theme/appTheme';
@@ -19,6 +20,7 @@ export function HabitCard({
   onToggleToday,
 }: HabitCardProps) {
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <Pressable
@@ -60,7 +62,7 @@ export function HabitCard({
               },
             ]}
           >
-            {completedToday ? 'Выполнено' : 'Не выполнено'}
+            {t(completedToday ? 'habitCard.completed' : 'habitCard.pending')}
           </Text>
         </View>
       </View>

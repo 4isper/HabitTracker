@@ -1,4 +1,5 @@
 import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -24,6 +25,7 @@ export function HabitDetailsScreen({
 
   const { getHabitById, toggleToday, deleteHabit } = useHabits();
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   const habit = getHabitById(habitId);
 
@@ -31,7 +33,7 @@ export function HabitDetailsScreen({
     return (
       <Screen>
         <ScreenHeader
-          title="Привычка не найдена"
+          title={t('common.notFoundTitle')}
           onBack={() => navigation.goBack()}
         />
       </Screen>
@@ -46,19 +48,19 @@ export function HabitDetailsScreen({
 
   const handleDelete = () => {
     Alert.alert(
-      'Удалить привычку?',
-      `Вы уверены, что хотите удалить «${habit.name}»? Вся история выполнения будет потеряна.`,
+      t('habitDetails.deleteTitle'),
+      t('habitDetails.deleteMessage', { name: habit.name }),
       [
         {
-          text: 'Отмена',
+          text: t('common.cancel'),
           style: 'cancel',
         },
         {
-          text: 'Удалить',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: () => {
             deleteHabit(habit.id);
-            navigation.popToTop(); // Возвращает на главный экран
+            navigation.popToTop();
           },
         },
       ]
@@ -68,7 +70,7 @@ export function HabitDetailsScreen({
   return (
     <Screen>
       <ScreenHeader
-        title="История привычки"
+        title={t('habitDetails.title')}
         onBack={() => navigation.goBack()}
       />
 
@@ -103,7 +105,11 @@ export function HabitDetailsScreen({
             },
           ]}
         >
-          {completedToday ? 'Выполнено сегодня' : 'Не выполнено сегодня'}
+          {t(
+            completedToday
+              ? 'habitDetails.statusCompleted'
+              : 'habitDetails.statusPending'
+          )}
         </Text>
 
         <Text
@@ -114,7 +120,7 @@ export function HabitDetailsScreen({
             },
           ]}
         >
-          Всего выполнений: {history.length}
+          {t('habitDetails.total', { value: history.length })}
         </Text>
       </View>
 
@@ -135,7 +141,9 @@ export function HabitDetailsScreen({
             },
           ]}
         >
-          {completedToday ? 'Снять отметку' : 'Отметить сегодня'}
+          {t(
+            completedToday ? 'habitDetails.unmarkToday' : 'habitDetails.markToday'
+          )}
         </Text>
       </Pressable>
 
@@ -160,7 +168,7 @@ export function HabitDetailsScreen({
             },
           ]}
         >
-          Редактировать
+          {t('habitDetails.edit')}
         </Text>
       </Pressable>
 
@@ -181,7 +189,7 @@ export function HabitDetailsScreen({
             },
           ]}
         >
-          Удалить привычку
+          {t('habitDetails.delete')}
         </Text>
       </Pressable>
 
@@ -193,7 +201,7 @@ export function HabitDetailsScreen({
           },
         ]}
       >
-        История выполнения
+        {t('habitDetails.historyTitle')}
       </Text>
 
       <FlatList
@@ -230,7 +238,7 @@ export function HabitDetailsScreen({
                 },
               ]}
             >
-              Выполнено
+              {t('habitDetails.historyItemStatus')}
             </Text>
           </View>
         )}
@@ -243,7 +251,7 @@ export function HabitDetailsScreen({
               },
             ]}
           >
-            Пока нет выполненных дней
+            {t('habitDetails.emptyHistory')}
           </Text>
         }
       />

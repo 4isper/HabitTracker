@@ -9,20 +9,23 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { EMOJI_OPTIONS, COLOR_OPTIONS } from '../constants/habitOptions';
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 
-import type { CreateHabitInput, UpdateHabitError, UpdateHabitResult } from '../types/habit';
+import type {
+  CreateHabitInput,
+  UpdateHabitError,
+  UpdateHabitResult,
+} from '../types/habit';
 
-const ERROR_MESSAGES: Record<UpdateHabitError, string> = {
-  empty: 'Название привычки обязательно',
-  duplicate: 'Привычка с таким названием уже есть',
-  notFound: 'Привычка не найдена',
-};
-
-const FALLBACK_ERROR_MESSAGE = 'Не удалось сохранить привычку';
+const ERROR_MESSAGE_KEYS = {
+  empty: 'habitForm.errors.empty',
+  duplicate: 'habitForm.errors.duplicate',
+  notFound: 'habitForm.errors.notFound',
+} as const satisfies Record<UpdateHabitError, string>;
 
 type HabitFormProps = {
   initialValues?: {
@@ -42,6 +45,7 @@ export function HabitForm({
   onCancel,
 }: HabitFormProps) {
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   const [name, setName] = useState(initialValues?.name ?? '');
   const [emoji, setEmoji] = useState<string | undefined>(
@@ -62,8 +66,8 @@ export function HabitForm({
     if (!result.success) {
       setFormError(
         result.error
-          ? ERROR_MESSAGES[result.error]
-          : FALLBACK_ERROR_MESSAGE
+          ? t(ERROR_MESSAGE_KEYS[result.error])
+          : t('habitForm.errors.unknown')
       );
 
       return;
@@ -90,7 +94,7 @@ export function HabitForm({
             },
           ]}
         >
-          Название *
+          {t('habitForm.nameLabel')}
         </Text>
 
         <TextInput
@@ -107,7 +111,7 @@ export function HabitForm({
             setName(value);
             setFormError(null);
           }}
-          placeholder="Например: пить воду"
+          placeholder={t('habitForm.namePlaceholder')}
           placeholderTextColor={theme.colors.textMuted}
         />
 
@@ -132,7 +136,7 @@ export function HabitForm({
             },
           ]}
         >
-          Иконка (необязательно)
+          {t('habitForm.emojiLabel')}
         </Text>
 
         <View style={styles.optionsRow}>
@@ -173,7 +177,7 @@ export function HabitForm({
             },
           ]}
         >
-          Цвет (необязательно)
+          {t('habitForm.colorLabel')}
         </Text>
 
         <View style={styles.optionsRow}>
@@ -240,7 +244,7 @@ export function HabitForm({
               },
             ]}
           >
-            Отмена
+            {t('common.cancel')}
           </Text>
         </Pressable>
       </ScrollView>

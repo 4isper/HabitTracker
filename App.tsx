@@ -1,4 +1,5 @@
 import { StatusBar } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import {
   DarkTheme,
@@ -6,6 +7,8 @@ import {
   NavigationContainer,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import './src/i18n';
 
 import { HabitsProvider } from './src/state/HabitsContext';
 
@@ -22,6 +25,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function App() {
   const theme = useAppTheme();
+  const { t } = useTranslation();
 
   const navigationTheme = {
     ...(theme.dark ? DarkTheme : DefaultTheme),
@@ -48,7 +52,7 @@ function App() {
             name="Home"
             component={HomeScreen}
             options={{
-              title: 'Привычки',
+              title: t('nav.home'),
             }}
           />
 
@@ -56,7 +60,7 @@ function App() {
             name="AddHabit"
             component={AddHabitScreen}
             options={{
-              title: 'Новая привычка',
+              title: t('nav.addHabit'),
             }}
           />
 
@@ -64,7 +68,7 @@ function App() {
             name="HabitDetails"
             component={HabitDetailsScreen}
             options={{
-              title: 'История привычки',
+              title: t('nav.habitDetails'),
             }}
           />
 
@@ -72,7 +76,7 @@ function App() {
             name="EditHabit"
             component={EditHabitScreen}
             options={{
-              title: 'Редактировать привычку',
+              title: t('nav.editHabit'),
             }}
           />
         </Stack.Navigator>

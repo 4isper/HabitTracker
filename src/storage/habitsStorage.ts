@@ -1,5 +1,7 @@
 import { createMMKV } from 'react-native-mmkv';
 
+import i18n from '../i18n';
+
 import type { Habit } from '../types/habit';
 
 const HABITS_STORAGE_KEY = 'habits';
@@ -18,7 +20,7 @@ export function loadHabits(): Habit[] {
 
     return Array.isArray(parsed) ? parsed : [];
   } catch (error) {
-    console.warn('Не удалось загрузить привычки из хранилища', error);
+    console.warn(i18n.t('storage.loadFailed'), error);
     return [];
   }
 }
@@ -28,7 +30,7 @@ export function saveHabits(habits: Habit[]): boolean {
     storage.set(HABITS_STORAGE_KEY, JSON.stringify(habits));
     return true;
   } catch (error) {
-    console.warn('Не удалось сохранить привычки в хранилище', error);
+    console.warn(i18n.t('storage.saveFailed'), error);
     return false;
   }
 }

@@ -1,0 +1,79 @@
+export const ru = {
+  common: {
+    cancel: 'Отмена',
+    back: 'Назад',
+    add: 'Добавить',
+    save: 'Сохранить',
+    delete: 'Удалить',
+    notFoundTitle: 'Привычка не найдена',
+  },
+  nav: {
+    home: 'Привычки',
+    addHabit: 'Новая привычка',
+    habitDetails: 'История привычки',
+    editHabit: 'Редактировать привычку',
+  },
+  home: {
+    title: 'Мои привычки',
+    addHabitA11y: 'Добавить привычку',
+    addHabit: 'Добавить привычку',
+    showAll: 'Показать все',
+    emptyAll: {
+      title: 'Привычек пока нет',
+      text: 'Добавьте первую привычку, чтобы начать отслеживать прогресс.',
+    },
+    emptyCompleted: {
+      title: 'Нет выполненных привычек',
+      text: 'Отметьте выполненную привычку, и она появится здесь.',
+    },
+    emptyPending: {
+      title: 'Все привычки выполнены',
+      text: 'Все привычки на сегодня уже отмечены. Отличная работа!',
+    },
+  },
+  filter: {
+    all: 'Все',
+    completed: 'Выполнено',
+    pending: 'Не выполнено',
+  },
+  habitCard: {
+    completed: 'Выполнено',
+    pending: 'Не выполнено',
+  },
+  habitForm: {
+    nameLabel: 'Название *',
+    namePlaceholder: 'Например: пить воду',
+    emojiLabel: 'Иконка (необязательно)',
+    colorLabel: 'Цвет (необязательно)',
+    errors: {
+      empty: 'Название привычки обязательно',
+      duplicate: 'Привычка с таким названием уже есть',
+      notFound: 'Привычка не найдена',
+      unknown: 'Не удалось сохранить привычку',
+    },
+  },
+  habitDetails: {
+    title: 'История привычки',
+    statusCompleted: 'Выполнено сегодня',
+    statusPending: 'Не выполнено сегодня',
+    total: 'Всего выполнений: {{value}}',
+    markToday: 'Отметить сегодня',
+    unmarkToday: 'Снять отметку',
+    edit: 'Редактировать',
+    delete: 'Удалить привычку',
+    deleteTitle: 'Удалить привычку?',
+    deleteMessage:
+      'Вы уверены, что хотите удалить «{{name}}»? Вся история выполнения будет потеряна.',
+    historyTitle: 'История выполнения',
+    historyItemStatus: 'Выполнено',
+    emptyHistory: 'Пока нет выполненных дней',
+  },
+  storage: {
+    saveError: 'Не удалось сохранить данные',
+    loadFailed: 'Не удалось загрузить привычки из хранилища',
+    saveFailed: 'Не удалось сохранить привычки в хранилище',
+  },
+  context: {
+    providerError: 'useHabits должен использоваться внутри HabitsProvider',
+  },
+} as const;

@@ -7,6 +7,8 @@ import {
   useState,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import type { ReactNode } from 'react';
 
 import type {
@@ -34,14 +36,16 @@ type HabitsContextValue = {
 const HabitsContext = createContext<HabitsContextValue | undefined>(undefined);
 
 export function HabitsProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
+
   const [habits, setHabits] = useState<Habit[]>(() => loadHabits());
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
     const ok = saveHabits(habits);
 
-    setSaveError(ok ? null : 'Не удалось сохранить данные');
-  }, [habits]);
+    setSaveError(ok ? null : t('storage.saveError'));
+  }, [habits, t]);
 
   const isDuplicateName = useCallback(
     (name: string, excludeId?: string) => {
@@ -205,9 +209,10 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
 export function useHabits() {
   const context = useContext(HabitsContext);
+  const { t } = useTranslation();
 
   if (!context) {
-    throw new Error('useHabits должен использоваться внутри HabitsProvider');
+    throw new Error(t('context.providerError'));
   }
 
   return context;
