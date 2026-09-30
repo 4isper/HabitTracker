@@ -23,6 +23,7 @@ type HabitsContextValue = {
   saveError: string | null;
   addHabit: (input: CreateHabitInput) => AddHabitResult;
   toggleToday: (habitId: string) => void;
+  deleteHabit: (habitId: string) => void;
   isDuplicateName: (name: string) => boolean;
   getHabitById: (habitId: string) => Habit | undefined;
 };
@@ -111,6 +112,12 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const deleteHabit = useCallback((habitId: string) => {
+    setHabits((prevHabits) =>
+      prevHabits.filter((habit) => habit.id !== habitId)
+    );
+  }, []);
+
   const getHabitById = useCallback(
     (habitId: string) => habits.find((habit) => habit.id === habitId),
     [habits]
@@ -122,6 +129,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       saveError,
       addHabit,
       toggleToday,
+      deleteHabit,
       isDuplicateName,
       getHabitById,
     }),
@@ -130,6 +138,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       saveError,
       addHabit,
       toggleToday,
+      deleteHabit,
       isDuplicateName,
       getHabitById,
     ]

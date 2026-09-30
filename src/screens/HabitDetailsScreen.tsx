@@ -1,4 +1,4 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -22,7 +22,7 @@ export function HabitDetailsScreen({
 }: HabitDetailsScreenProps) {
   const { habitId } = route.params;
 
-  const { getHabitById, toggleToday } = useHabits();
+  const { getHabitById, toggleToday, deleteHabit } = useHabits();
   const theme = useAppTheme();
 
   const habit = getHabitById(habitId);
@@ -43,6 +43,27 @@ export function HabitDetailsScreen({
   const completedToday = habit.completedDates.includes(todayKey);
 
   const history = [...habit.completedDates].sort((a, b) => b.localeCompare(a));
+
+  const handleDelete = () => {
+    Alert.alert(
+      'Удалить привычку?',
+      `Вы уверены, что хотите удалить «${habit.name}»? Вся история выполнения будет потеряна.`,
+      [
+        {
+          text: 'Отмена',
+          style: 'cancel',
+        },
+        {
+          text: 'Удалить',
+          style: 'destructive',
+          onPress: () => {
+            deleteHabit(habit.id);
+            navigation.popToTop(); // Возвращает на главный экран
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <Screen>
@@ -115,6 +136,27 @@ export function HabitDetailsScreen({
           ]}
         >
           {completedToday ? 'Снять отметку' : 'Отметить сегодня'}
+        </Text>
+      </Pressable>
+
+      <Pressable
+        style={[
+          styles.deleteButton,
+          {
+            backgroundColor: theme.colors.danger,
+          },
+        ]}
+        onPress={handleDelete}
+      >
+        <Text
+          style={[
+            styles.deleteButtonText,
+            {
+              color: theme.colors.primaryText,
+            },
+          ]}
+        >
+          Удалить привычку
         </Text>
       </Pressable>
 
@@ -215,6 +257,16 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xxl,
   },
   toggleButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  deleteButton: {
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  deleteButtonText: {
     fontSize: 16,
     fontWeight: '700',
   },
