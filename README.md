@@ -1,97 +1,140 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# HabitTracker
 
-# Getting Started
+Мобильное приложение для отслеживания ежедневных привычек: список привычек, отметка выполнения за сегодня, история и базовая статистика в виде процента выполнения и серии дней подряд.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+Данные хранятся локально на устройстве и переживают перезапуск приложения.
 
-## Step 1: Start Metro
+## Возможности
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+- **Список привычек** — название, иконка (emoji) и статус за текущий день. Выполненные визуально отличаются: другой фон, зелёный чекбокс, перечёркнутое название.
+- **Добавление и редактирование** — обязательное название, опциональные emoji и цвет. Название не может быть пустым или совпадать с уже существующей привычкой (сравнение без учёта регистра).
+- **Отметка выполнения** — тап по чекбоксу отмечает привычку на сегодня, повторный тап снимает отметку. Интерфейс обновляется сразу.
+- **История выполнения** — список дат с отметками, по убыванию.
+- **Статистика** — процент выполнения с момента создания привычки, серия дней подряд и общее число выполнений, с полосой прогресса.
+- **Фильтрация** — показ только выполненных или только невыполненных привычек с количеством в каждой вкладке.
+- **Тёмная тема** — следует системной настройке, без переключателя в приложении.
+- **Уведомления об ошибках сохранения** — если запись в хранилище не удалась, на главном экране появляется сообщение.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Технологии
+
+- **React Native** 0.87.1 — CLI, New Architecture, Hermes
+- **TypeScript** — strict-режим
+- **React Navigation 7** — `native-stack`
+- **MMKV 4** — локальное хранилище (`react-native-mmkv`)
+- **Анимации** — core `Animated` с `useNativeDriver: true`
+- **Иконки** — `lucide-react-native`
+- **Локализация** — i18next + react-i18next, русский язык
+- **Стили** — `StyleSheet` и собственные токены темы
+
+Внешних UI-китов нет — все компоненты написаны вручную на стандартных примитивах React Native.
+
+## Запуск
+
+### Требования
+
+- Node.js ≥ 22.11
+- iOS: Xcode, CocoaPods ≥ 1.13, Ruby ≥ 2.6.10
+- Android: JDK, Android SDK (minSdk 24, targetSdk 36)
+
+### Установка
 
 ```sh
-# Using npm
-npm start
+git clone https://github.com/4isper/HabitTracker.git && cd HabitTracker
 
-# OR using Yarn
-yarn start
+npm install
+
+# для iOS — обязательно: ставит нативные зависимости
+pod install --project-directory=ios
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+`Pods/` в `.gitignore`, поэтому на чистой машине `pod install` нужен всегда. Использовать системный `pod` или `bundle exec pod` — неважно, но вендорить через Bundler надёжнее: `Gemfile` пинит версии (`cocoapods != 1.15.0`, `xcodeproj < 1.26.0`), и `Gemfile.lock` зафиксирован в репозитории.
 
 ```sh
 bundle install
+bundle exec pod install --project-directory=ios
 ```
 
-Then, and every time you update your native dependencies, run:
+Если системный CocoaPods отличается от версии в `Gemfile.lock`, соберите приложение той командой, которой запускали вы.
+
+### Запуск
 
 ```sh
-bundle exec pod install
+npm start        # Metro в отдельном терминале
+
+npm run ios      # или npm run android
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## Проверки качества
 
 ```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npm run lint     # ESLint
+npx tsc --noEmit # проверка типов
+npm test         # Jest
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Структура проекта
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```
+src/
+├── components/     переиспользуемые UI-компоненты
+├── screens/        экраны (Home, AddHabit, EditHabit, HabitDetails)
+├── state/          HabitsContext — состояние и бизнес-логика
+├── storage/        чтение и запись в MMKV
+├── theme/          токены: цвета, отступы, радиусы, типографика, motion
+├── utils/          работа с датами и расчёт статистики
+├── types/          TypeScript-типы домена
+├── constants/      варианты эмодзи и цветов
+├── i18n/           словари переводов
+└── navigation/     типы параметров навигации
+```
 
-## Step 3: Modify your app
+### Токены темы
 
-Now that you have successfully run the app, let's make changes!
+Оформление вынесено в отдельные токены, компоненты не содержат «сырых» значений:
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+- `theme/appTheme.ts` — семантические цвета для светлой и тёмной темы (13 цветов в каждой)
+- `theme/spacing.ts` — шкала отступов
+- `theme/radii.ts` — радиусы скругления
+- `theme/typography.ts` — размеры и начертания текста
+- `theme/motion.ts` — длительности, пружина, параметры нажатия
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### Анимации
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+`components/Touchable.tsx` — обёртка над `Pressable`, единая точка отклика на нажатие для всех интерактивных элементов: приглушение прозрачности и опциональное пружинное уменьшение. Анимации чекбокса при отметке выполнены на core `Animated` и идут на UI-потоке.
 
-## Congratulations! :tada:
+## Архитектура
 
-You've successfully run and modified your React Native App. :partying_face:
+Состояние вынесено в `HabitsContext` (`useHabits`) — единственный источник правды. Экраны не обращаются к хранилищу напрямую: контекст загружает данные при инициализации и сохраняет их при изменении через `useEffect`.
 
-### Now what?
+Экраны деталей привычки используют `ListHeaderComponent` у `FlatList`, поэтому карточка, кнопки и заголовок истории прокручиваются вместе со списком — это позволяет пользоваться приложением в ландшафтной ориентации.
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+Расчёт статистики вынесен в чистые функции `utils/stats.ts`, не зависящие от React. Они принимают текущую дату параметром, поэтому тестируются без моков и без вмешательства часов.
 
-# Troubleshooting
+## Обработка пограничных случаев
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+| Случай                              | Поведение                                                         |
+| ----------------------------------- | ----------------------------------------------------------------- |
+| Пустой список привычек              | Отдельный экран-приветствие с кнопкой добавления                  |
+| Нет привычек в выбранном фильтре    | Другое сообщение и кнопка «показать все»                          |
+| Пустое название                     | Ошибка валидации, привычка не создаётся                           |
+| Дубликат названия                   | Ошибка валидации; «Пить воду» и «пить воду» считаются одинаковыми |
+| Привычка не найдена (устаревший id) | Отдельный экран «не найдено» вместо падения                       |
+| Ошибка записи в хранилище           | Сообщение на главном экране, данные в памяти не теряются          |
+| Некорректные данные в хранилище     | Приложение стартует с пустым списком, ошибка логируется           |
 
-# Learn More
+Серия дней подряд не обнуляется, пока текущий день не закончился: если сегодня привычка ещё не отмечена, но вчера была, серия продолжается.
 
-To learn more about React Native, take a look at the following resources:
+## Тесты
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+`__tests__/stats.test.ts` — 21 unit-тест на расчёт серии, процента выполнения и разницы между датами: пустые данные, разрывы в серии, переход через границы месяцев, високосный день, дубликаты дат, некорректные ключи и привычка, созданная в будущем.
+
+```sh
+npm test
+```
+
+## Что не реализовано
+
+Часть возможностей из технического задания отмечена как дополнительные и в текущей версии не сделаны:
+
+- уведомления-напоминания
+- календарное представление истории (сейчас список дат)
