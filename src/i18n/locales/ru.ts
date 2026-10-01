@@ -67,6 +67,10 @@ export const ru = {
     deleteMessage:
       'Вы уверены, что хотите удалить «{{name}}»? Вся история выполнения будет потеряна.',
     historyTitle: 'История выполнения',
+    statRate: 'Выполнено',
+    statStreak: 'Серия',
+    statTotal: 'Всего',
+    statDays: '{{value}} дн.',
     historyItemStatus: 'Выполнено',
     emptyHistory: 'Пока нет выполненных дней',
   },

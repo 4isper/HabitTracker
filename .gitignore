@@ -35,6 +35,10 @@ local.properties
 !debug.keystore
 .kotlin/
 
+# Android build artifacts
+android/app/release/
+android/gradle/gradle-daemon-jvm.properties
+
 # node.js
 #
 node_modules/

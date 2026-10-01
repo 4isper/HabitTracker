@@ -206,7 +206,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 style={[
                   styles.emptyButton,
                   {
-                    backgroundColor: theme.colors.surfaceAlt,
+                    backgroundColor: theme.colors.control,
                   },
                 ]}
                 onPress={() => setFilter('all')}

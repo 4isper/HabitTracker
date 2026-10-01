@@ -6,8 +6,11 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Screen } from '../components/Screen';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { Touchable } from '../components/Touchable';
+import { ProgressBar } from '../components/ProgressBar';
+import { StatsRow } from '../components/StatsRow';
 import { useHabits } from '../state/HabitsContext';
 import { formatDateForDisplay, getTodayKey } from '../utils/date';
+import { getHabitStats } from '../utils/stats';
 import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 import { radii } from '../theme/radii';
@@ -49,6 +52,8 @@ export function HabitDetailsScreen({
 
   const history = [...habit.completedDates].sort((a, b) => b.localeCompare(a));
 
+  const stats = getHabitStats(habit.completedDates, habit.createdAt, todayKey);
+
   const handleDelete = () => {
     Alert.alert(
       t('habitDetails.deleteTitle'),
@@ -66,7 +71,7 @@ export function HabitDetailsScreen({
             navigation.popToTop();
           },
         },
-      ]
+      ],
     );
   };
 
@@ -77,142 +82,141 @@ export function HabitDetailsScreen({
         onBack={() => navigation.goBack()}
       />
 
-      <View
-        style={[
-          styles.headerCard,
-          {
-            backgroundColor: theme.colors.surface,
-            borderColor: theme.colors.border,
-            borderLeftColor: habit.color ?? theme.colors.textMuted,
-          },
-        ]}
-      >
-        <Text style={styles.emoji}>{habit.emoji || '🌱'}</Text>
-
-        <Text
-          style={[
-            styles.name,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-        >
-          {habit.name}
-        </Text>
-
-        <Text
-          style={[
-            styles.status,
-            {
-              color: theme.colors.textMuted,
-            },
-          ]}
-        >
-          {t(
-            completedToday
-              ? 'habitDetails.statusCompleted'
-              : 'habitDetails.statusPending'
-          )}
-        </Text>
-
-        <Text
-          style={[
-            styles.total,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-        >
-          {t('habitDetails.total', { value: history.length })}
-        </Text>
-      </View>
-
-      <Touchable
-        animateScale
-        style={[
-          styles.toggleButton,
-          {
-            backgroundColor: theme.colors.success,
-          },
-        ]}
-        onPress={() => toggleToday(habit.id)}
-      >
-        <Text
-          style={[
-            styles.toggleButtonText,
-            {
-              color: theme.colors.primaryText,
-            },
-          ]}
-        >
-          {t(
-            completedToday ? 'habitDetails.unmarkToday' : 'habitDetails.markToday'
-          )}
-        </Text>
-      </Touchable>
-
-      <Touchable
-        style={[
-          styles.editButton,
-          {
-            backgroundColor: theme.colors.surfaceAlt,
-          },
-        ]}
-        onPress={() =>
-          navigation.navigate('EditHabit', {
-            habitId: habit.id,
-          })
-        }
-      >
-        <Text
-          style={[
-            styles.editButtonText,
-            {
-              color: theme.colors.text,
-            },
-          ]}
-        >
-          {t('habitDetails.edit')}
-        </Text>
-      </Touchable>
-
-      <Touchable
-        style={[
-          styles.deleteButton,
-          {
-            backgroundColor: theme.colors.danger,
-          },
-        ]}
-        onPress={handleDelete}
-      >
-        <Text
-          style={[
-            styles.deleteButtonText,
-            {
-              color: theme.colors.primaryText,
-            },
-          ]}
-        >
-          {t('habitDetails.delete')}
-        </Text>
-      </Touchable>
-
-      <Text
-        style={[
-          styles.historyTitle,
-          {
-            color: theme.colors.text,
-          },
-        ]}
-      >
-        {t('habitDetails.historyTitle')}
-      </Text>
-
       <FlatList
         style={styles.historyList}
         data={history}
         keyExtractor={item => item}
         contentContainerStyle={styles.historyListContent}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <View>
+            <View
+              style={[
+                styles.headerCard,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  borderLeftColor: habit.color ?? theme.colors.textMuted,
+                },
+              ]}
+            >
+              <Text style={styles.emoji}>{habit.emoji || '🌱'}</Text>
+
+              <Text
+                style={[
+                  styles.name,
+                  {
+                    color: theme.colors.text,
+                  },
+                ]}
+              >
+                {habit.name}
+              </Text>
+
+              <Text
+                style={[
+                  styles.status,
+                  {
+                    color: theme.colors.textMuted,
+                  },
+                ]}
+              >
+                {t(
+                  completedToday
+                    ? 'habitDetails.statusCompleted'
+                    : 'habitDetails.statusPending',
+                )}
+              </Text>
+
+              <ProgressBar progress={stats.completionRate} />
+
+              <StatsRow stats={stats} />
+            </View>
+
+            <Touchable
+              animateScale
+              style={[
+                styles.toggleButton,
+                {
+                  backgroundColor: theme.colors.success,
+                },
+              ]}
+              onPress={() => toggleToday(habit.id)}
+            >
+              <Text
+                style={[
+                  styles.toggleButtonText,
+                  {
+                    color: theme.colors.primaryText,
+                  },
+                ]}
+              >
+                {t(
+                  completedToday
+                    ? 'habitDetails.unmarkToday'
+                    : 'habitDetails.markToday',
+                )}
+              </Text>
+            </Touchable>
+
+            <Touchable
+              style={[
+                styles.editButton,
+                {
+                  backgroundColor: theme.colors.control,
+                },
+              ]}
+              onPress={() =>
+                navigation.navigate('EditHabit', {
+                  habitId: habit.id,
+                })
+              }
+            >
+              <Text
+                style={[
+                  styles.editButtonText,
+                  {
+                    color: theme.colors.text,
+                  },
+                ]}
+              >
+                {t('habitDetails.edit')}
+              </Text>
+            </Touchable>
+
+            <Touchable
+              style={[
+                styles.deleteButton,
+                {
+                  backgroundColor: theme.colors.danger,
+                },
+              ]}
+              onPress={handleDelete}
+            >
+              <Text
+                style={[
+                  styles.deleteButtonText,
+                  {
+                    color: theme.colors.primaryText,
+                  },
+                ]}
+              >
+                {t('habitDetails.delete')}
+              </Text>
+            </Touchable>
+
+            <Text
+              style={[
+                styles.historyTitle,
+                {
+                  color: theme.colors.text,
+                },
+              ]}
+            >
+              {t('habitDetails.historyTitle')}
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <View
             style={[
@@ -283,9 +287,6 @@ const styles = StyleSheet.create({
     ...text.bodySm,
     marginBottom: spacing.sm,
   },
-  total: {
-    ...text.bodySm,
-  },
   toggleButton: {
     borderRadius: radii.card,
     paddingVertical: controlPadding.button,
@@ -321,6 +322,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   historyListContent: {
+    flexGrow: 1,
     paddingBottom: spacing.huge,
   },
   historyItem: {

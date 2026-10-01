@@ -6,6 +6,7 @@ export type AppTheme = {
     background: string;
     surface: string;
     surfaceAlt: string;
+    control: string;
     text: string;
     textMuted: string;
     border: string;
@@ -24,6 +25,7 @@ const lightTheme: AppTheme = {
     background: '#f9fafb',
     surface: '#ffffff',
     surfaceAlt: '#f3f4f6',
+    control: '#d1d5db',
     text: '#111827',
     textMuted: '#6b7280',
     border: '#e5e7eb',
@@ -42,6 +44,7 @@ const darkTheme: AppTheme = {
     background: '#020617',
     surface: '#0f172a',
     surfaceAlt: '#1e293b',
+    control: '#334155',
     text: '#f8fafc',
     textMuted: '#94a3b8',
     border: '#1e293b',

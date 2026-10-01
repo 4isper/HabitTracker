@@ -87,6 +87,7 @@ export function HabitForm({
         style={styles.scroll}
         contentContainerStyle={styles.content}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         <Text
           style={[
@@ -240,7 +241,7 @@ export function HabitForm({
           style={[
             styles.cancelButton,
             {
-              backgroundColor: theme.colors.surfaceAlt,
+              backgroundColor: theme.colors.control,
             },
           ]}
           onPress={onCancel}

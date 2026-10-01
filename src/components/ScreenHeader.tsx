@@ -34,7 +34,7 @@ export function ScreenHeader({
             accessibilityLabel={t('common.back')}
             onPress={onBack}
             style={{
-              backgroundColor: theme.colors.surfaceAlt,
+              backgroundColor: theme.colors.control,
             }}
           >
             <Icon name="back" color={theme.colors.text} />
