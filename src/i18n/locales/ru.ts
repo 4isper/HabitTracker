@@ -34,7 +34,7 @@ export const ru = {
   filter: {
     all: 'Все',
     completed: 'Выполнено',
-    pending: 'Не выполнено',
+    pending: 'Осталось',
   },
   habitCard: {
     completed: 'Выполнено',

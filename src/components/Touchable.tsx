@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet } from 'react-native';
 
 import type { ReactNode } from 'react';
@@ -20,6 +20,8 @@ type TouchableProps = {
   animateScale?: boolean;
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export function Touchable({
   children,
   style,
@@ -34,8 +36,10 @@ export function Touchable({
   animateScale = false,
 }: TouchableProps) {
   const scale = useRef(new Animated.Value(1)).current;
+  const [pressed, setPressed] = useState(false);
 
   const handlePressIn = useCallback(() => {
+    setPressed(true);
     onPressIn?.();
 
     if (!animateScale) {
@@ -50,6 +54,7 @@ export function Touchable({
   }, [animateScale, onPressIn, scale]);
 
   const handlePressOut = useCallback(() => {
+    setPressed(false);
     onPressOut?.();
 
     if (!animateScale) {
@@ -64,7 +69,7 @@ export function Touchable({
   }, [animateScale, onPressOut, scale]);
 
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole={accessibilityRole}
       accessibilityLabel={accessibilityLabel}
       accessibilityState={accessibilityState}
@@ -73,14 +78,14 @@ export function Touchable({
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
-      style={({ pressed }) => [
+      style={[
         style,
-        pressed && styles.pressed,
+        pressed ? styles.pressed : null,
         animateScale ? { transform: [{ scale }] } : null,
       ]}
     >
       {children}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
