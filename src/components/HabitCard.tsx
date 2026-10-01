@@ -3,6 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import { Icon } from './Icon';
 import { useAppTheme } from '../theme/appTheme';
+import { spacing } from '../theme/spacing';
+import { radii } from '../theme/radii';
+import { emojiSize, text } from '../theme/typography';
 
 import type { Habit } from '../types/habit';
 
@@ -100,11 +103,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 14,
+    borderRadius: radii.card,
     borderWidth: 1,
     borderLeftWidth: 4,
-    padding: 16,
-    marginBottom: 12,
+    padding: spacing.lg,
+    marginBottom: spacing.md,
   },
   info: {
     flexDirection: 'row',
@@ -112,27 +115,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   emoji: {
-    fontSize: 26,
-    marginRight: 12,
+    fontSize: emojiSize.md,
+    marginRight: spacing.md,
   },
   textBlock: {
     flex: 1,
   },
   name: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 2,
+    ...text.buttonSm,
+    marginBottom: spacing.xxs,
   },
   nameCompleted: {
     textDecorationLine: 'line-through',
   },
   status: {
-    fontSize: 13,
+    ...text.caption,
   },
   checkbox: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: radii.pill,
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',

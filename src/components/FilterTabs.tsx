@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
+import { radii } from '../theme/radii';
+import { text } from '../theme/typography';
 
 import type { HabitFilter } from '../types/habit';
 
@@ -77,13 +79,12 @@ const styles = StyleSheet.create({
   tab: {
     flex: 1,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: radii.chip,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.xs,
     alignItems: 'center',
   },
   tabText: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...text.captionStrong,
   },
 });

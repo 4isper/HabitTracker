@@ -12,8 +12,10 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { EMOJI_OPTIONS, COLOR_OPTIONS } from '../constants/habitOptions';
-import { spacing } from '../theme/spacing';
+import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
+import { radii } from '../theme/radii';
+import { emojiSize, text } from '../theme/typography';
 
 import type {
   CreateHabitInput,
@@ -263,16 +265,15 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.huge + spacing.xxl,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
+    ...text.label,
     marginBottom: spacing.sm,
   },
   input: {
     borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: spacing.md + 2,
+    borderRadius: radii.control,
+    paddingHorizontal: spacing.md + spacing.xxs,
     paddingVertical: spacing.md,
-    fontSize: 16,
+    fontSize: text.bodyLg.fontSize,
     marginBottom: spacing.xl,
   },
   error: {
@@ -286,42 +287,40 @@ const styles = StyleSheet.create({
   emojiOption: {
     width: 48,
     height: 48,
-    borderRadius: 12,
+    borderRadius: radii.control,
     borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 10,
-    marginBottom: 10,
+    marginRight: controlPadding.chipGap,
+    marginBottom: controlPadding.chipGap,
   },
   emojiText: {
-    fontSize: 22,
+    fontSize: emojiSize.sm,
   },
   colorOption: {
     width: 36,
     height: 36,
-    borderRadius: 18,
-    marginRight: 12,
-    marginBottom: 12,
+    borderRadius: radii.pill,
+    marginRight: spacing.md,
+    marginBottom: spacing.md,
     borderWidth: 2,
     borderColor: 'transparent',
   },
   submitButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: radii.card,
+    paddingVertical: controlPadding.button,
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   submitButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...text.button,
   },
   cancelButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: radii.card,
+    paddingVertical: controlPadding.button,
     alignItems: 'center',
   },
   cancelButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...text.buttonSm,
   },
 });

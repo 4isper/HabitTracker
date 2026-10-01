@@ -7,8 +7,10 @@ import { Screen } from '../components/Screen';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { useHabits } from '../state/HabitsContext';
 import { formatDateForDisplay, getTodayKey } from '../utils/date';
-import { spacing } from '../theme/spacing';
+import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
+import { radii } from '../theme/radii';
+import { emojiSize, text } from '../theme/typography';
 
 import type { RootStackParamList } from '../navigation/types';
 
@@ -261,61 +263,56 @@ export function HabitDetailsScreen({
 
 const styles = StyleSheet.create({
   headerCard: {
-    borderRadius: 16,
+    borderRadius: radii.card,
     borderWidth: 1,
     borderLeftWidth: 4,
     padding: spacing.xl,
     marginBottom: spacing.lg,
   },
   emoji: {
-    fontSize: 32,
-    marginBottom: 8,
+    fontSize: emojiSize.lg,
+    marginBottom: spacing.xs,
   },
   name: {
-    fontSize: 22,
-    fontWeight: '700',
-    marginBottom: 4,
+    ...text.heading,
+    marginBottom: spacing.xs,
   },
   status: {
-    fontSize: 14,
-    marginBottom: 8,
+    ...text.bodySm,
+    marginBottom: spacing.sm,
   },
   total: {
-    fontSize: 14,
+    ...text.bodySm,
   },
   toggleButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: radii.card,
+    paddingVertical: controlPadding.button,
     alignItems: 'center',
     marginBottom: spacing.xxl,
   },
   toggleButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...text.button,
   },
   editButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: radii.card,
+    paddingVertical: controlPadding.button,
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   editButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...text.button,
   },
   deleteButton: {
-    borderRadius: 14,
-    paddingVertical: 14,
+    borderRadius: radii.card,
+    paddingVertical: controlPadding.button,
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: spacing.xxl,
   },
   deleteButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...text.button,
   },
   historyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
+    ...text.title,
     marginBottom: spacing.md,
   },
   historyList: {
@@ -325,7 +322,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.huge,
   },
   historyItem: {
-    borderRadius: 12,
+    borderRadius: radii.control,
     borderWidth: 1,
     padding: spacing.lg,
     marginBottom: spacing.md,
@@ -334,14 +331,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   historyDate: {
-    fontSize: 15,
+    ...text.body,
   },
   historyStatus: {
-    fontSize: 13,
-    fontWeight: '600',
+    ...text.captionStrong,
   },
   emptyHistory: {
-    fontSize: 14,
-    marginTop: 12,
+    ...text.bodySm,
+    marginTop: spacing.md,
   },
 });

@@ -14,6 +14,8 @@ import { useHabits } from '../state/HabitsContext';
 import { getTodayKey } from '../utils/date';
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
+import { radii } from '../theme/radii';
+import { text } from '../theme/typography';
 
 import type { Habit, HabitFilter } from '../types/habit';
 import type { RootStackParamList } from '../navigation/types';
@@ -227,7 +229,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
 const styles = StyleSheet.create({
   error: {
-    marginBottom: 12,
+    marginBottom: spacing.md,
   },
   list: {
     flex: 1,
@@ -240,19 +242,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 8,
+    ...text.title,
+    marginBottom: spacing.sm,
   },
   emptyText: {
-    fontSize: 14,
+    ...text.bodySm,
     textAlign: 'center',
-    marginBottom: 16,
+    marginBottom: spacing.lg,
   },
   emptyButton: {
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+    borderRadius: radii.control,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.xl,
   },
   emptyButtonText: {
     fontWeight: '600',

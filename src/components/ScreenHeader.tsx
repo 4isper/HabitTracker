@@ -8,6 +8,7 @@ import { CircleButton, CIRCLE_BUTTON_SIZE } from './CircleButton';
 import { Icon } from './Icon';
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
+import { text } from '../theme/typography';
 
 type ScreenHeaderProps = {
   title: string;
@@ -71,8 +72,7 @@ const styles = StyleSheet.create({
   },
   title: {
     flex: 1,
-    fontSize: 18,
-    fontWeight: '700',
+    ...text.title,
     textAlign: 'center',
     marginHorizontal: spacing.sm,
   },

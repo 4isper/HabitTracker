@@ -3,6 +3,8 @@ import { Pressable, StyleSheet } from 'react-native';
 
 import type { StyleProp, ViewStyle } from 'react-native';
 
+import { radii } from '../theme/radii';
+
 export const CIRCLE_BUTTON_SIZE = 40;
 
 const HIT_SLOP = 10;
@@ -37,7 +39,7 @@ const styles = StyleSheet.create({
   button: {
     width: CIRCLE_BUTTON_SIZE,
     height: CIRCLE_BUTTON_SIZE,
-    borderRadius: CIRCLE_BUTTON_SIZE / 2,
+    borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
