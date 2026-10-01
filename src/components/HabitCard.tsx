@@ -1,13 +1,18 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { Icon } from './Icon';
+import { Touchable } from './Touchable';
 import { useAppTheme } from '../theme/appTheme';
 import { spacing } from '../theme/spacing';
 import { radii } from '../theme/radii';
 import { emojiSize, text } from '../theme/typography';
+import { motion } from '../theme/motion';
 
 import type { Habit } from '../types/habit';
+
+const HIT_SLOP = 10;
 
 type HabitCardProps = {
   habit: Habit;
@@ -25,8 +30,32 @@ export function HabitCard({
   const theme = useAppTheme();
   const { t } = useTranslation();
 
+  const scale = useRef(new Animated.Value(1)).current;
+  const checkOpacity = useRef(
+    new Animated.Value(completedToday ? 1 : 0),
+  ).current;
+
+  useEffect(() => {
+    if (completedToday) {
+      scale.setValue(motion.pop.scale);
+    }
+
+    Animated.parallel([
+      Animated.timing(scale, {
+        toValue: 1,
+        duration: motion.duration.normal,
+        useNativeDriver: true,
+      }),
+      Animated.timing(checkOpacity, {
+        toValue: completedToday ? 1 : 0,
+        duration: motion.duration.fast,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [checkOpacity, completedToday, scale]);
+
   return (
-    <Pressable
+    <Touchable
       style={[
         styles.card,
         {
@@ -70,31 +99,38 @@ export function HabitCard({
         </View>
       </View>
 
-      <Pressable
-        style={[
-          styles.checkbox,
-          {
-            backgroundColor: completedToday
-              ? theme.colors.success
-              : theme.colors.surface,
-            borderColor: completedToday
-              ? theme.colors.success
-              : theme.colors.border,
-          },
-        ]}
-        onPress={onToggleToday}
-        hitSlop={10}
-      >
-        {completedToday ? (
-          <Icon
-            name="check"
-            color={theme.colors.primaryText}
-            size={18}
-            strokeWidth={3}
-          />
-        ) : null}
-      </Pressable>
-    </Pressable>
+      <Animated.View style={[styles.checkboxScale, { transform: [{ scale }] }]}>
+        <Touchable
+          accessibilityLabel={t(
+            completedToday ? 'habitCard.unmarkToday' : 'habitCard.markToday'
+          )}
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: completedToday }}
+          style={[
+            styles.checkbox,
+            {
+              backgroundColor: completedToday
+                ? theme.colors.success
+                : theme.colors.surface,
+              borderColor: completedToday
+                ? theme.colors.success
+                : theme.colors.border,
+            },
+          ]}
+          onPress={onToggleToday}
+          hitSlop={HIT_SLOP}
+        >
+          <Animated.View style={{ opacity: checkOpacity }}>
+            <Icon
+              name="check"
+              color={theme.colors.primaryText}
+              size={18}
+              strokeWidth={3}
+            />
+          </Animated.View>
+        </Touchable>
+      </Animated.View>
+    </Touchable>
   );
 }
 
@@ -130,6 +166,10 @@ const styles = StyleSheet.create({
   },
   status: {
     ...text.caption,
+  },
+  checkboxScale: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   checkbox: {
     width: 28,

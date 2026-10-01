@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import type { StyleProp, ViewStyle } from 'react-native';
 
+import { Touchable } from './Touchable';
 import { radii } from '../theme/radii';
 
 export const CIRCLE_BUTTON_SIZE = 40;
@@ -23,15 +24,15 @@ export function CircleButton({
   style,
 }: CircleButtonProps) {
   return (
-    <Pressable
-      accessibilityRole="button"
+    <Touchable
       accessibilityLabel={accessibilityLabel}
+      animateScale
       hitSlop={HIT_SLOP}
-      style={({ pressed }) => [styles.button, pressed && styles.pressed, style]}
+      style={[styles.button, style]}
       onPress={onPress}
     >
       {children}
-    </Pressable>
+    </Touchable>
   );
 }
 
@@ -42,8 +43,5 @@ const styles = StyleSheet.create({
     borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  pressed: {
-    opacity: 0.6,
   },
 });

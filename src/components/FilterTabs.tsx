@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { Touchable } from './Touchable';
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 import { radii } from '../theme/radii';
@@ -36,10 +37,10 @@ export function FilterTabs({ value, onChange, counts }: FilterTabsProps) {
         const count = counts?.[option.value];
 
         return (
-          <Pressable
+          <Touchable
             key={option.value}
-            accessibilityRole="button"
             accessibilityState={{ selected: isActive }}
+            animateScale
             style={[
               styles.tab,
               {
@@ -64,7 +65,7 @@ export function FilterTabs({ value, onChange, counts }: FilterTabsProps) {
               {t(option.labelKey)}
               {typeof count === 'number' ? ` · ${count}` : ''}
             </Text>
-          </Pressable>
+          </Touchable>
         );
       })}
     </View>

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import { FilterTabs } from '../components/FilterTabs';
 import { Icon } from '../components/Icon';
 import { Screen } from '../components/Screen';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { Touchable } from '../components/Touchable';
 import { useHabits } from '../state/HabitsContext';
 import { getTodayKey } from '../utils/date';
 import { spacing } from '../theme/spacing';
@@ -154,7 +155,8 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 {t(EMPTY_FILTER_KEYS.all.text)}
               </Text>
 
-              <Pressable
+              <Touchable
+                animateScale
                 style={[
                   styles.emptyButton,
                   {
@@ -173,7 +175,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 >
                   {t('home.addHabit')}
                 </Text>
-              </Pressable>
+              </Touchable>
             </View>
           ) : (
             <View style={styles.emptyState}>
@@ -199,7 +201,8 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 {t(EMPTY_FILTER_KEYS[filter].text)}
               </Text>
 
-              <Pressable
+              <Touchable
+                animateScale
                 style={[
                   styles.emptyButton,
                   {
@@ -218,7 +221,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 >
                   {t('home.showAll')}
                 </Text>
-              </Pressable>
+              </Touchable>
             </View>
           )
         }

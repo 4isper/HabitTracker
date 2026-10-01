@@ -1,10 +1,11 @@
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { Screen } from '../components/Screen';
 import { ScreenHeader } from '../components/ScreenHeader';
+import { Touchable } from '../components/Touchable';
 import { useHabits } from '../state/HabitsContext';
 import { formatDateForDisplay, getTodayKey } from '../utils/date';
 import { controlPadding, spacing } from '../theme/spacing';
@@ -126,7 +127,8 @@ export function HabitDetailsScreen({
         </Text>
       </View>
 
-      <Pressable
+      <Touchable
+        animateScale
         style={[
           styles.toggleButton,
           {
@@ -147,9 +149,9 @@ export function HabitDetailsScreen({
             completedToday ? 'habitDetails.unmarkToday' : 'habitDetails.markToday'
           )}
         </Text>
-      </Pressable>
+      </Touchable>
 
-      <Pressable
+      <Touchable
         style={[
           styles.editButton,
           {
@@ -172,9 +174,9 @@ export function HabitDetailsScreen({
         >
           {t('habitDetails.edit')}
         </Text>
-      </Pressable>
+      </Touchable>
 
-      <Pressable
+      <Touchable
         style={[
           styles.deleteButton,
           {
@@ -193,7 +195,7 @@ export function HabitDetailsScreen({
         >
           {t('habitDetails.delete')}
         </Text>
-      </Pressable>
+      </Touchable>
 
       <Text
         style={[

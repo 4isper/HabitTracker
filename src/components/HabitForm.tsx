@@ -2,7 +2,6 @@ import { useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -11,6 +10,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { Touchable } from './Touchable';
 import { EMOJI_OPTIONS, COLOR_OPTIONS } from '../constants/habitOptions';
 import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
@@ -146,8 +146,11 @@ export function HabitForm({
             const isActive = emoji === option;
 
             return (
-              <Pressable
+              <Touchable
                 key={option}
+                animateScale
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: isActive }}
                 style={[
                   styles.emojiOption,
                   {
@@ -166,7 +169,7 @@ export function HabitForm({
                 }
               >
                 <Text style={styles.emojiText}>{option}</Text>
-              </Pressable>
+              </Touchable>
             );
           })}
         </View>
@@ -187,8 +190,11 @@ export function HabitForm({
             const isActive = color === option;
 
             return (
-              <Pressable
+              <Touchable
                 key={option}
+                animateScale
+                accessibilityRole="checkbox"
+                accessibilityState={{ checked: isActive }}
                 style={[
                   styles.colorOption,
                   {
@@ -208,7 +214,8 @@ export function HabitForm({
           })}
         </View>
 
-        <Pressable
+        <Touchable
+          animateScale
           style={[
             styles.submitButton,
             {
@@ -227,9 +234,9 @@ export function HabitForm({
           >
             {submitLabel}
           </Text>
-        </Pressable>
+        </Touchable>
 
-        <Pressable
+        <Touchable
           style={[
             styles.cancelButton,
             {
@@ -248,7 +255,7 @@ export function HabitForm({
           >
             {t('common.cancel')}
           </Text>
-        </Pressable>
+        </Touchable>
       </ScrollView>
     </KeyboardAvoidingView>
   );

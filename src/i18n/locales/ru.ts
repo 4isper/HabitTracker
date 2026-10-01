@@ -39,6 +39,8 @@ export const ru = {
   habitCard: {
     completed: 'Выполнено',
     pending: 'Не выполнено',
+    markToday: 'Отметить выполненной сегодня',
+    unmarkToday: 'Снять отметку за сегодня',
   },
   habitForm: {
     nameLabel: 'Название *',
