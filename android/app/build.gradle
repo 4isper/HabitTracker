@@ -79,7 +79,7 @@ android {
 
     namespace "com.habittracker"
     defaultConfig {
-        applicationId "com.habittracker"
+        applicationId "com.m4isper.habittracker"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
