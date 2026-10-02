@@ -9,7 +9,8 @@ import { Touchable } from '../components/Touchable';
 import { ProgressBar } from '../components/ProgressBar';
 import { StatsRow } from '../components/StatsRow';
 import { useHabits } from '../state/HabitsContext';
-import { formatDateForDisplay, getTodayKey } from '../utils/date';
+import { useTodayKey } from '../hooks/useTodayKey';
+import { formatDateForDisplay } from '../utils/date';
 import { getHabitStats } from '../utils/stats';
 import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
@@ -32,6 +33,7 @@ export function HabitDetailsScreen({
   const { getHabitById, toggleToday, deleteHabit } = useHabits();
   const theme = useAppTheme();
   const { t } = useTranslation();
+  const todayKey = useTodayKey();
 
   const habit = getHabitById(habitId);
 
@@ -45,8 +47,6 @@ export function HabitDetailsScreen({
       </Screen>
     );
   }
-
-  const todayKey = getTodayKey();
 
   const completedToday = habit.completedDates.includes(todayKey);
 

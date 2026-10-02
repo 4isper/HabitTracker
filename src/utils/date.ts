@@ -1,3 +1,5 @@
+const MIN_MS_UNTIL_NEXT_DAY = 1000;
+
 export function formatDateKey(date: Date): string {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -8,6 +10,16 @@ export function formatDateKey(date: Date): string {
 
 export function getTodayKey(): string {
   return formatDateKey(new Date());
+}
+
+export function msUntilNextDay(now: Date = new Date()): number {
+  const nextDay = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate() + 1,
+  );
+
+  return Math.max(nextDay.getTime() - now.getTime(), MIN_MS_UNTIL_NEXT_DAY);
 }
 
 export function formatDateForDisplay(dateKey: string): string {

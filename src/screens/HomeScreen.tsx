@@ -12,7 +12,7 @@ import { Screen } from '../components/Screen';
 import { ScreenHeader } from '../components/ScreenHeader';
 import { Touchable } from '../components/Touchable';
 import { useHabits } from '../state/HabitsContext';
-import { getTodayKey } from '../utils/date';
+import { useTodayKey } from '../hooks/useTodayKey';
 import { spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 import { radii } from '../theme/radii';
@@ -45,7 +45,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
   const [filter, setFilter] = useState<HabitFilter>('all');
 
-  const todayKey = getTodayKey();
+  const todayKey = useTodayKey();
 
   const { completedIds, visibleHabits, counts } = useMemo(() => {
     const completed = new Set<string>();
