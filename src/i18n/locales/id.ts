@@ -1,0 +1,97 @@
+export const id = {
+  common: {
+    cancel: 'Batal',
+    back: 'Kembali',
+    add: 'Tambah',
+    save: 'Simpan',
+    delete: 'Hapus',
+    notFoundTitle: 'Kebiasaan tidak ditemukan',
+  },
+  nav: {
+    home: 'Kebiasaan',
+    addHabit: 'Kebiasaan Baru',
+    habitDetails: 'Riwayat Kebiasaan',
+    editHabit: 'Edit Kebiasaan',
+  },
+  home: {
+    title: 'Kebiasaan Saya',
+    addHabitA11y: 'Tambah kebiasaan',
+    addHabit: 'Tambah kebiasaan',
+    showAll: 'Tampilkan semua',
+    emptyAll: {
+      title: 'Belum ada kebiasaan',
+      text: 'Tambahkan kebiasaan pertama Anda untuk mulai melacak kemajuan.',
+    },
+    emptyCompleted: {
+      title: 'Belum ada kebiasaan yang selesai',
+      text: 'Tandai kebiasaan sebagai selesai dan akan muncul di sini.',
+    },
+    emptyPending: {
+      title: 'Semua kebiasaan selesai',
+      text: 'Anda sudah menandai semua kebiasaan untuk hari ini. Kerja bagus!',
+    },
+  },
+  filter: {
+    all: 'Semua',
+    completed: 'Selesai',
+    pending: 'Tersisa',
+    allWithCount: 'Semua · {{total}}',
+    completedWithCount: 'Selesai · {{total}}',
+    pendingWithCount: 'Tersisa · {{total}}',
+  },
+  habitCard: {
+    completed: 'Selesai',
+    pending: 'Belum selesai',
+    markToday: 'Tandai selesai hari ini',
+    unmarkToday: 'Batalkan tanda hari ini',
+  },
+  habitForm: {
+    nameLabel: 'Nama *',
+    namePlaceholder: 'Contoh: minum air putih',
+    emojiLabel: 'Ikon (opsional)',
+    colorLabel: 'Warna (opsional)',
+    errors: {
+      empty: 'Nama kebiasaan wajib diisi',
+      duplicate: 'Kebiasaan dengan nama ini sudah ada',
+      notFound: 'Kebiasaan tidak ditemukan',
+      unknown: 'Gagal menyimpan kebiasaan',
+    },
+  },
+  habitDetails: {
+    title: 'Riwayat Kebiasaan',
+    statusCompleted: 'Selesai hari ini',
+    statusPending: 'Belum selesai hari ini',
+    markToday: 'Tandai hari ini',
+    unmarkToday: 'Batalkan tanda',
+    edit: 'Edit',
+    delete: 'Hapus kebiasaan',
+    deleteTitle: 'Hapus kebiasaan?',
+    deleteMessage:
+      'Anda yakin ingin menghapus "{{name}}"? Seluruh riwayat penyelesaian akan hilang.',
+    historyTitle: 'Riwayat penyelesaian',
+    statRate: 'Penyelesaian',
+    statStreak: 'Beruntun',
+    statTotal: 'Total',
+    statDays_other: '{{count}} hari',
+    percentValue: '{{value}}%',
+    historyItemStatus: 'Selesai',
+    emptyHistory: 'Belum ada hari yang selesai',
+  },
+  storage: {
+    saveError: 'Gagal menyimpan data',
+    loadFailed: 'Gagal memuat kebiasaan dari penyimpanan',
+    saveFailed: 'Gagal menyimpan kebiasaan ke penyimpanan',
+    backupFailed: 'Gagal mencadangkan data',
+  },
+  errorBoundary: {
+    title: 'Terjadi kesalahan',
+    description:
+      'Aplikasi mengalami kesalahan yang tidak terduga. Data kebiasaan Anda tersimpan secara lokal.',
+    retry: 'Coba lagi',
+    reset: 'Atur ulang data',
+    crashed: 'Kesalahan tidak terduga',
+  },
+  context: {
+    providerError: 'useHabits harus digunakan di dalam HabitsProvider',
+  },
+} as const;

@@ -1,0 +1,98 @@
+export const hi = {
+  common: {
+    cancel: 'रद्द करें',
+    back: 'वापस',
+    add: 'जोड़ें',
+    save: 'सहेजें',
+    delete: 'हटाएँ',
+    notFoundTitle: 'आदत नहीं मिली',
+  },
+  nav: {
+    home: 'आदतें',
+    addHabit: 'नई आदत',
+    habitDetails: 'आदत का इतिहास',
+    editHabit: 'आदत संपादित करें',
+  },
+  home: {
+    title: 'मेरी आदतें',
+    addHabitA11y: 'आदत जोड़ें',
+    addHabit: 'आदत जोड़ें',
+    showAll: 'सभी दिखाएँ',
+    emptyAll: {
+      title: 'अभी कोई आदत नहीं है',
+      text: 'अपनी प्रगति पर नज़र रखना शुरू करने के लिए पहली आदत जोड़ें।',
+    },
+    emptyCompleted: {
+      title: 'कोई आदत पूरी नहीं हुई',
+      text: 'किसी आदत को पूरी के रूप में चिह्नित करें और वह यहाँ दिखाई देगी।',
+    },
+    emptyPending: {
+      title: 'सभी आदतें पूरी हो गईं',
+      text: 'आज की सभी आदतें आपने पूरी कर दी हैं। बहुत बढ़िया!',
+    },
+  },
+  filter: {
+    all: 'सभी',
+    completed: 'पूरी',
+    pending: 'बाकी',
+    allWithCount: 'सभी · {{total}}',
+    completedWithCount: 'पूरी · {{total}}',
+    pendingWithCount: 'बाकी · {{total}}',
+  },
+  habitCard: {
+    completed: 'पूरी',
+    pending: 'अधूरी',
+    markToday: 'आज के लिए पूरी चिह्नित करें',
+    unmarkToday: 'आज का चिह्न हटाएँ',
+  },
+  habitForm: {
+    nameLabel: 'नाम *',
+    namePlaceholder: 'उदाहरण: पानी पीना',
+    emojiLabel: 'आइकन (वैकल्पिक)',
+    colorLabel: 'रंग (वैकल्पिक)',
+    errors: {
+      empty: 'आदत का नाम आवश्यक है',
+      duplicate: 'इस नाम वाली आदत पहले से मौजूद है',
+      notFound: 'आदत नहीं मिली',
+      unknown: 'आदत सहेजी नहीं जा सकी',
+    },
+  },
+  habitDetails: {
+    title: 'आदत का इतिहास',
+    statusCompleted: 'आज पूरी हुई',
+    statusPending: 'आज अधूरी है',
+    markToday: 'आज चिह्नित करें',
+    unmarkToday: 'चिह्न हटाएँ',
+    edit: 'संपादित करें',
+    delete: 'आदत हटाएँ',
+    deleteTitle: 'आदत हटाएँ?',
+    deleteMessage:
+      'क्या आप वाकई "{{name}}" हटाना चाहते हैं? इसकी पूरी पूर्णता का इतिहास मिट जाएगा।',
+    historyTitle: 'पूर्णता का इतिहास',
+    statRate: 'पूर्णता',
+    statStreak: 'लगातार',
+    statTotal: 'कुल',
+    statDays_one: '{{count}} दिन',
+    statDays_other: '{{count}} दिन',
+    percentValue: '{{value}}%',
+    historyItemStatus: 'पूरी हुई',
+    emptyHistory: 'अभी कोई पूर्ण दिन नहीं है',
+  },
+  storage: {
+    saveError: 'डेटा सहेजा नहीं जा सका',
+    loadFailed: 'स्टोरेज से आदतें लोड नहीं हो सकीं',
+    saveFailed: 'स्टोरेज में आदतें सहेजी नहीं जा सकीं',
+    backupFailed: 'डेटा का बैकअप नहीं बनाया जा सका',
+  },
+  errorBoundary: {
+    title: 'कुछ गलत हो गया',
+    description:
+      'ऐप में एक अप्रत्याशित त्रुटि आई है। आपकी आदतों का डेटा स्थानीय रूप से सहेजा गया है।',
+    retry: 'फिर से कोशिश करें',
+    reset: 'डेटा रीसेट करें',
+    crashed: 'अप्रत्याशित त्रुटि',
+  },
+  context: {
+    providerError: 'useHabits को HabitsProvider के भीतर इस्तेमाल करना चाहिए',
+  },
+} as const;

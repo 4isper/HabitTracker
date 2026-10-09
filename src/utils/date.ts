@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 const MIN_MS_UNTIL_NEXT_DAY = 1000;
 
 export function formatDateKey(date: Date): string {
@@ -39,7 +41,7 @@ export function formatDateForDisplay(dateKey: string): string {
 
   const date = new Date(year, month - 1, day);
 
-  return date.toLocaleDateString('ru-RU', {
+  return date.toLocaleDateString(i18n.language, {
     year: 'numeric',
     month: 'long',
     day: 'numeric',

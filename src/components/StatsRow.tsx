@@ -16,10 +16,13 @@ export function StatsRow({ stats }: StatsRowProps) {
   const { t } = useTranslation();
 
   const items = [
-    { label: t('habitDetails.statRate'), value: `${stats.completionRate}%` },
+    {
+      label: t('habitDetails.statRate'),
+      value: t('habitDetails.percentValue', { value: stats.completionRate }),
+    },
     {
       label: t('habitDetails.statStreak'),
-      value: t('habitDetails.statDays', { value: stats.streak }),
+      value: t('habitDetails.statDays', { count: stats.streak }),
     },
     {
       label: t('habitDetails.statTotal'),

@@ -1,0 +1,98 @@
+export const en = {
+  common: {
+    cancel: 'Cancel',
+    back: 'Back',
+    add: 'Add',
+    save: 'Save',
+    delete: 'Delete',
+    notFoundTitle: 'Habit not found',
+  },
+  nav: {
+    home: 'Habits',
+    addHabit: 'New habit',
+    habitDetails: 'Habit history',
+    editHabit: 'Edit habit',
+  },
+  home: {
+    title: 'My habits',
+    addHabitA11y: 'Add habit',
+    addHabit: 'Add habit',
+    showAll: 'Show all',
+    emptyAll: {
+      title: 'No habits yet',
+      text: 'Add your first habit to start tracking your progress.',
+    },
+    emptyCompleted: {
+      title: 'No completed habits',
+      text: 'Mark a habit as done and it will show up here.',
+    },
+    emptyPending: {
+      title: 'All habits completed',
+      text: "You've marked every habit for today as done. Great job!",
+    },
+  },
+  filter: {
+    all: 'All',
+    completed: 'Done',
+    pending: 'Left',
+    allWithCount: 'All · {{total}}',
+    completedWithCount: 'Done · {{total}}',
+    pendingWithCount: 'Left · {{total}}',
+  },
+  habitCard: {
+    completed: 'Done',
+    pending: 'Not done',
+    markToday: 'Mark as done today',
+    unmarkToday: 'Unmark today',
+  },
+  habitForm: {
+    nameLabel: 'Name *',
+    namePlaceholder: 'For example: drink water',
+    emojiLabel: 'Icon (optional)',
+    colorLabel: 'Color (optional)',
+    errors: {
+      empty: 'Habit name is required',
+      duplicate: 'A habit with this name already exists',
+      notFound: 'Habit not found',
+      unknown: 'Could not save the habit',
+    },
+  },
+  habitDetails: {
+    title: 'Habit history',
+    statusCompleted: 'Done today',
+    statusPending: 'Not done today',
+    markToday: 'Mark today',
+    unmarkToday: 'Unmark',
+    edit: 'Edit',
+    delete: 'Delete habit',
+    deleteTitle: 'Delete habit?',
+    deleteMessage:
+      'Are you sure you want to delete “{{name}}”? Its whole history will be lost.',
+    historyTitle: 'Completion history',
+    statRate: 'Completion',
+    statStreak: 'Streak',
+    statTotal: 'Total',
+    statDays_one: '{{count}} day',
+    statDays_other: '{{count}} days',
+    percentValue: '{{value}}%',
+    historyItemStatus: 'Done',
+    emptyHistory: 'No completed days yet',
+  },
+  storage: {
+    saveError: 'Could not save your data',
+    loadFailed: 'Could not load habits from storage',
+    saveFailed: 'Could not save habits to storage',
+    backupFailed: 'Could not back up your data',
+  },
+  errorBoundary: {
+    title: 'Something went wrong',
+    description:
+      'The app ran into an unexpected error. Your habit data is stored locally.',
+    retry: 'Try again',
+    reset: 'Reset data',
+    crashed: 'Unexpected error',
+  },
+  context: {
+    providerError: 'useHabits must be used inside a HabitsProvider',
+  },
+} as const;

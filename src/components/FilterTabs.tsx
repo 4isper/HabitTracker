@@ -12,12 +12,24 @@ import type { HabitFilter } from '../types/habit';
 type FilterOption = {
   value: HabitFilter;
   labelKey: 'filter.all' | 'filter.completed' | 'filter.pending';
+  countKey:
+    | 'filter.allWithCount'
+    | 'filter.completedWithCount'
+    | 'filter.pendingWithCount';
 };
 
 const OPTIONS: FilterOption[] = [
-  { value: 'all', labelKey: 'filter.all' },
-  { value: 'completed', labelKey: 'filter.completed' },
-  { value: 'pending', labelKey: 'filter.pending' },
+  { value: 'all', labelKey: 'filter.all', countKey: 'filter.allWithCount' },
+  {
+    value: 'completed',
+    labelKey: 'filter.completed',
+    countKey: 'filter.completedWithCount',
+  },
+  {
+    value: 'pending',
+    labelKey: 'filter.pending',
+    countKey: 'filter.pendingWithCount',
+  },
 ];
 
 type FilterTabsProps = {
@@ -62,8 +74,9 @@ export function FilterTabs({ value, onChange, counts }: FilterTabsProps) {
                 },
               ]}
             >
-              {t(option.labelKey)}
-              {typeof count === 'number' ? ` · ${count}` : ''}
+              {typeof count === 'number'
+                ? t(option.countKey, { total: count })
+                : t(option.labelKey)}
             </Text>
           </Touchable>
         );
