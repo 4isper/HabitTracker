@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!--
+      Notifee declares INTERNET for its remote-messaging support. This app is
+      fully offline and only schedules local notifications, so the permission is
+      never exercised. Stripping it here rather than in src/main leaves the debug
+      variant free to talk to Metro.
+
+      src/release outranks src/main in the manifest merger, so this marker wins.
+    -->
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
+
+</manifest>

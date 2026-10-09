@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+      Debug builds talk to the Metro dev server over the network, which needs
+      INTERNET. Notifee's merged manifest already grants it, but declaring it
+      explicitly keeps the dev requirement independent of the native dependency
+      tree. The release variant strips it again in src/release.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>
