@@ -1,4 +1,27 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Daily habit reminders. Inexact alarms only, so no SCHEDULE_EXACT_ALARM. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Re-registers scheduled reminders after a reboot, which clears alarms. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--
+      Notifee declares this for exact alarms. We schedule with
+      setAndAllowWhileIdle, so the permission is never exercised; leaving it
+      declared would only make Google Play demand a special-use justification.
+    -->
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        tools:node="remove" />
+    <!--
+      Notifee declares this for its remote-messaging support. This app is fully
+      offline and only schedules local notifications, so the permission is never
+      exercised and keeping it out keeps the Play data-disclosure form honest.
+    -->
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        tools:node="remove" />
 
     <application
       android:name=".MainApplication"

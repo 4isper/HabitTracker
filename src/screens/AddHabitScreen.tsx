@@ -16,7 +16,7 @@ type AddHabitScreenProps = NativeStackScreenProps<
 >;
 
 export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
-  const { addHabit } = useHabits();
+  const { addHabit, ensureReminderPermission } = useHabits();
   const { t } = useTranslation();
 
   const handleSubmit = (input: CreateHabitInput) => {
@@ -39,6 +39,7 @@ export function AddHabitScreen({ navigation }: AddHabitScreenProps) {
       <HabitForm
         submitLabel={t('common.add')}
         onSubmit={handleSubmit}
+        onReminderRequested={ensureReminderPermission}
         onCancel={() => navigation.goBack()}
       />
     </Screen>

@@ -21,7 +21,7 @@ export function EditHabitScreen({
 }: EditHabitScreenProps) {
   const { habitId } = route.params;
 
-  const { getHabitById, updateHabit } = useHabits();
+  const { getHabitById, updateHabit, ensureReminderPermission } = useHabits();
   const { t } = useTranslation();
 
   const habit = getHabitById(habitId);
@@ -59,9 +59,11 @@ export function EditHabitScreen({
           name: habit.name,
           emoji: habit.emoji,
           color: habit.color,
+          reminderTime: habit.reminderTime,
         }}
         submitLabel={t('common.save')}
         onSubmit={handleSubmit}
+        onReminderRequested={ensureReminderPermission}
         onCancel={() => navigation.goBack()}
       />
     </Screen>

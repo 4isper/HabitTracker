@@ -5,12 +5,15 @@ export type Habit = {
   color?: string;
   createdAt: string;
   completedDates: string[];
+  /** Daily reminder in `HH:mm` 24-hour form. Absent means no reminder. */
+  reminderTime?: string;
 };
 
 export type CreateHabitInput = {
   name: string;
   emoji?: string;
   color?: string;
+  reminderTime?: string;
 };
 
 export type AddHabitError = 'empty' | 'duplicate';

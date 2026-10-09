@@ -21,18 +21,24 @@ import type {
 } from '../types/habit';
 
 import { loadHabits, saveHabits } from '../storage/habitsStorage';
+import {
+  requestNotificationPermission,
+  syncHabitReminders,
+} from '../notifications/reminders';
 import { getTodayKey } from '../utils/date';
 import { createId } from '../utils/id';
 
 type HabitsContextValue = {
   habits: Habit[];
   saveError: string | null;
+  reminderError: string | null;
   addHabit: (input: CreateHabitInput) => AddHabitResult;
   toggleToday: (habitId: string) => void;
   deleteHabit: (habitId: string) => void;
   isDuplicateName: (name: string, excludeId?: string) => boolean;
   getHabitById: (habitId: string) => Habit | undefined;
   updateHabit: (habitId: string, input: UpdateHabitInput) => UpdateHabitResult;
+  ensureReminderPermission: () => Promise<boolean>;
 };
 
 const HabitsContext = createContext<HabitsContextValue | undefined>(undefined);
@@ -43,6 +49,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
   const [initialLoad] = useState(() => loadHabits());
   const [habits, setHabits] = useState<Habit[]>(initialLoad.habits);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [reminderError, setReminderError] = useState<string | null>(null);
 
   /**
    * A failed load means storage held data we could not parse and `habits` is an
@@ -62,6 +69,43 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
 
     setSaveError(ok ? null : t('storage.saveError'));
   }, [habits, t]);
+
+  /**
+   * Reminders are reconciled from a signature of only the fields a schedule
+   * depends on. Re-syncing on every `habits` change would tear down and rebuild
+   * every alarm each time the user taps a checkbox.
+   *
+   * Alarms do not survive a reboot and the app can be killed while a habit is
+   * renamed, retimed or deleted, so this also runs on mount to repair whatever
+   * the OS lost.
+   */
+  const habitsRef = useRef(habits);
+
+  useEffect(() => {
+    habitsRef.current = habits;
+  }, [habits]);
+
+  const reminderSignature = useMemo(
+    () =>
+      habits
+        .map(habit => `${habit.id}|${habit.name}|${habit.reminderTime ?? ''}`)
+        .join('||'),
+    [habits],
+  );
+
+  useEffect(() => {
+    syncHabitReminders(habitsRef.current).catch(error => {
+      console.warn(t('notifications.syncFailed'), error);
+    });
+  }, [reminderSignature, t]);
+
+  const ensureReminderPermission = useCallback(async () => {
+    const granted = await requestNotificationPermission();
+
+    setReminderError(granted ? null : t('notifications.permissionDenied'));
+
+    return granted;
+  }, [t]);
 
   const isDuplicateName = useCallback(
     (name: string, excludeId?: string) => {
@@ -103,6 +147,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         name,
         emoji: input.emoji?.trim() || undefined,
         color: input.color || undefined,
+        reminderTime: input.reminderTime,
         createdAt: new Date().toISOString(),
         completedDates: [],
       };
@@ -162,6 +207,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
             name,
             emoji: input.emoji?.trim() || undefined,
             color: input.color || undefined,
+            reminderTime: input.reminderTime,
           };
         })
       );
@@ -205,27 +251,31 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     [habits]
   );
 
-  const value = useMemo(
+const value = useMemo(
     () => ({
       habits,
       saveError,
+      reminderError,
       addHabit,
       toggleToday,
       deleteHabit,
       isDuplicateName,
       getHabitById,
       updateHabit,
+      ensureReminderPermission,
     }),
     [
       habits,
       saveError,
+      reminderError,
       addHabit,
       toggleToday,
       deleteHabit,
       isDuplicateName,
       getHabitById,
       updateHabit,
-    ]
+      ensureReminderPermission,
+    ],
   );
 
   return <HabitsContext.Provider value={value}>{children}</HabitsContext.Provider>;

@@ -50,6 +50,10 @@ export const ru = {
     namePlaceholder: 'Например: пить воду',
     emojiLabel: 'Иконка (необязательно)',
     colorLabel: 'Цвет (необязательно)',
+    reminderLabel: 'Напоминание',
+    reminderEnabled: 'Ежедневно в {{time}}',
+    reminderDisabled: 'Без напоминания',
+    reminderPick: 'Выбрать время напоминания',
     errors: {
       empty: 'Название привычки обязательно',
       duplicate: 'Привычка с таким названием уже есть',
@@ -85,6 +89,14 @@ export const ru = {
     loadFailed: 'Не удалось загрузить привычки из хранилища',
     saveFailed: 'Не удалось сохранить привычки в хранилище',
     backupFailed: 'Не удалось сделать резервную копию данных',
+  },
+  notifications: {
+    channelName: 'Напоминания о привычках',
+    title: 'Пора: {{name}}',
+    body: 'Отметьте выполнение, чтобы продолжить серию.',
+    syncFailed: 'Не удалось запланировать напоминания',
+    permissionDenied:
+      'Нет разрешения на уведомления, напоминания приходить не будут.',
   },
   errorBoundary: {
     title: 'Что-то пошло не так',

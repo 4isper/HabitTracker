@@ -1,6 +1,7 @@
 import { createMMKV } from 'react-native-mmkv';
 
 import i18n from '../i18n';
+import { isValidReminderTime } from '../utils/time';
 
 import type { Habit } from '../types/habit';
 
@@ -8,7 +9,7 @@ const HABITS_STORAGE_KEY = 'habits';
 const SCHEMA_VERSION_KEY = 'habits.schemaVersion';
 const RAW_BACKUP_KEY = 'habits.rawBackup';
 
-const CURRENT_SCHEMA_VERSION = 1;
+const CURRENT_SCHEMA_VERSION = 2;
 
 const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -82,6 +83,10 @@ function sanitizeHabit(value: unknown): SanitizedHabit {
     candidate.completedDates,
   );
 
+  const reminderChanged =
+    candidate.reminderTime !== undefined &&
+    !isValidReminderTime(candidate.reminderTime);
+
   return {
     habit: {
       id: candidate.id,
@@ -90,8 +95,11 @@ function sanitizeHabit(value: unknown): SanitizedHabit {
       completedDates,
       emoji: sanitizeOptionalString(candidate.emoji),
       color: sanitizeOptionalString(candidate.color),
+      reminderTime: isValidReminderTime(candidate.reminderTime)
+        ? candidate.reminderTime
+        : undefined,
     },
-    changed: datesChanged,
+    changed: datesChanged || reminderChanged,
   };
 }
 

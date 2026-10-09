@@ -50,6 +50,10 @@ export const en = {
     namePlaceholder: 'For example: drink water',
     emojiLabel: 'Icon (optional)',
     colorLabel: 'Color (optional)',
+    reminderLabel: 'Reminder',
+    reminderEnabled: 'Daily at {{time}}',
+    reminderDisabled: 'No reminder',
+    reminderPick: 'Choose reminder time',
     errors: {
       empty: 'Habit name is required',
       duplicate: 'A habit with this name already exists',
@@ -83,6 +87,14 @@ export const en = {
     loadFailed: 'Could not load habits from storage',
     saveFailed: 'Could not save habits to storage',
     backupFailed: 'Could not back up your data',
+  },
+  notifications: {
+    channelName: 'Habit reminders',
+    title: 'Time for {{name}}',
+    body: 'Mark it done to keep your streak going.',
+    syncFailed: 'Could not schedule reminders',
+    permissionDenied:
+      'Notification permission is not granted. Reminders will not arrive.',
   },
   errorBoundary: {
     title: 'Something went wrong',

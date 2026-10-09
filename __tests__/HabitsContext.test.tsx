@@ -6,10 +6,28 @@ import { Text } from 'react-native';
 import { act, create } from 'react-test-renderer';
 
 import * as ReactNativeMMKV from 'react-native-mmkv';
+import * as Notifee from '@notifee/react-native';
 
 import { HabitsProvider, useHabits } from '../src/state/HabitsContext';
 
 import type { ReactTestRenderer } from 'react-test-renderer';
+
+type MockedNotifee = {
+  __scheduled: Map<string, unknown>;
+  __setAuthorizationStatus: (status: number) => void;
+  __reset: () => void;
+  AuthorizationStatus: Record<string, number>;
+};
+
+const notifeeMock = Notifee as unknown as MockedNotifee;
+
+const { AuthorizationStatus: AUTHORIZATION_STATUS } = notifeeMock;
+
+const scheduled = notifeeMock.__scheduled;
+
+function setAuthorizationStatus(status: number): void {
+  notifeeMock.__setAuthorizationStatus(status);
+}
 
 jest.mock('react-native-mmkv', () => {
   const data = new Map<string, unknown>();
@@ -66,6 +84,24 @@ function renderProvider(): ReactTestRenderer {
   return tree as ReactTestRenderer;
 }
 
+/**
+ * Reminder reconciliation runs through several awaited native calls, so its
+ * effects settle only after the microtask queue drains.
+ */
+async function renderProviderAsync(): Promise<ReactTestRenderer> {
+  let tree: ReactTestRenderer | undefined;
+
+  await act(async () => {
+    tree = create(
+      <HabitsProvider>
+        <Consumer />
+      </HabitsProvider>,
+    );
+  });
+
+  return tree as ReactTestRenderer;
+}
+
 function readPayload(): unknown {
   const raw = store.get(HABITS_KEY);
 
@@ -74,6 +110,8 @@ function readPayload(): unknown {
 
 beforeEach(() => {
   store.clear();
+  scheduled.clear();
+  setAuthorizationStatus(AUTHORIZATION_STATUS.AUTHORIZED);
   api = null;
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
@@ -145,6 +183,125 @@ describe('HabitsProvider persistence', () => {
 
     expect(readPayload()).toEqual(JSON.parse(payload));
     expect(store.get(BACKUP_KEY)).toBeUndefined();
+  });
+});
+
+describe('HabitsProvider reminders', () => {
+  function scheduledIds(): string[] {
+    return [...scheduled.keys()].sort();
+  }
+
+  it('schedules a reminder when a habit is created with one', async () => {
+    await renderProviderAsync();
+
+    await act(async () => {
+      api?.addHabit({ name: 'Пить воду', reminderTime: '09:00' });
+    });
+
+    expect(scheduled.size).toBe(1);
+  });
+
+  it('schedules nothing for a habit without a reminder', async () => {
+    await renderProviderAsync();
+
+    await act(async () => {
+      api?.addHabit({ name: 'Пить воду' });
+    });
+
+    expect(scheduled.size).toBe(0);
+  });
+
+  it('reschedules when the reminder time changes', async () => {
+    await renderProviderAsync();
+
+    await act(async () => {
+      api?.addHabit({ name: 'Пить воду', reminderTime: '09:00' });
+    });
+
+    const [habit] = api!.habits;
+
+    await act(async () => {
+      api?.updateHabit(habit.id, { name: 'Пить воду', reminderTime: '18:00' });
+    });
+
+    expect(scheduled.size).toBe(1);
+  });
+
+  it('does not touch alarms when a checkbox is toggled', async () => {
+    await renderProviderAsync();
+
+    await act(async () => {
+      api?.addHabit({ name: 'Пить воду', reminderTime: '09:00' });
+    });
+
+    const id = api!.habits[0].id;
+
+    await act(async () => {
+      api?.toggleToday(id);
+    });
+
+    expect(scheduled.size).toBe(1);
+  });
+
+  it('cancels the alarm when a habit is deleted', async () => {
+    await renderProviderAsync();
+
+    await act(async () => {
+      api?.addHabit({ name: 'Пить воду', reminderTime: '09:00' });
+    });
+
+    const id = api!.habits[0].id;
+
+    await act(async () => {
+      api?.deleteHabit(id);
+    });
+
+    expect(scheduled.size).toBe(0);
+  });
+
+  it('rebuilds the whole schedule on launch, recovering from a reboot', async () => {
+    store.set(
+      HABITS_KEY,
+      JSON.stringify([
+        {
+          id: 'a1',
+          name: 'Пить воду',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          completedDates: [],
+          reminderTime: '09:00',
+        },
+      ]),
+    );
+
+    await renderProviderAsync();
+
+    expect(scheduledIds()).toEqual(['habit-reminder-a1']);
+  });
+});
+
+describe('HabitsProvider permission handling', () => {
+  it('reports denial and clears it once granted', async () => {
+    setAuthorizationStatus(AUTHORIZATION_STATUS.DENIED);
+
+    await renderProviderAsync();
+
+    let granted: boolean | undefined;
+
+    await act(async () => {
+      granted = await api?.ensureReminderPermission();
+    });
+
+    expect(granted).toBe(false);
+    expect(api?.reminderError).not.toBeNull();
+
+    setAuthorizationStatus(AUTHORIZATION_STATUS.AUTHORIZED);
+
+    await act(async () => {
+      granted = await api?.ensureReminderPermission();
+    });
+
+    expect(granted).toBe(true);
+    expect(api?.reminderError).toBeNull();
   });
 });
 

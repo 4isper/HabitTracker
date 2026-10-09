@@ -50,6 +50,10 @@ export const pt = {
     namePlaceholder: 'Por exemplo: beber água',
     emojiLabel: 'Ícone (opcional)',
     colorLabel: 'Cor (opcional)',
+    reminderLabel: 'Lembrete',
+    reminderEnabled: 'Todos os dias às {{time}}',
+    reminderDisabled: 'Sem lembrete',
+    reminderPick: 'Escolher horário do lembrete',
     errors: {
       empty: 'O nome do hábito é obrigatório',
       duplicate: 'Já existe um hábito com esse nome',
@@ -84,6 +88,14 @@ export const pt = {
     loadFailed: 'Não foi possível carregar os hábitos do armazenamento',
     saveFailed: 'Não foi possível salvar os hábitos no armazenamento',
     backupFailed: 'Não foi possível fazer o backup dos dados',
+  },
+  notifications: {
+    channelName: 'Lembretes de hábitos',
+    title: 'Hora de {{name}}',
+    body: 'Marque como concluído para manter sua sequência.',
+    syncFailed: 'Não foi possível agendar os lembretes',
+    permissionDenied:
+      'A permissão de notificações não foi concedida. Os lembretes não chegarão.',
   },
   errorBoundary: {
     title: 'Algo deu errado',

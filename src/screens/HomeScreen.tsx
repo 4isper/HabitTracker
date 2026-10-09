@@ -39,7 +39,7 @@ const EMPTY_FILTER_KEYS = {
 } as const satisfies Record<HabitFilter, { title: string; text: string }>;
 
 export function HomeScreen({ navigation }: HomeScreenProps) {
-  const { habits, toggleToday, saveError } = useHabits();
+  const { habits, toggleToday, saveError, reminderError } = useHabits();
   const theme = useAppTheme();
   const { t } = useTranslation();
 
@@ -110,7 +110,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
 
       <FilterTabs value={filter} onChange={setFilter} counts={counts} />
 
-      {saveError ? (
+      {(saveError || reminderError) ? (
         <Text
           style={[
             styles.error,
@@ -119,7 +119,7 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             },
           ]}
         >
-          {saveError}
+          {saveError ?? reminderError}
         </Text>
       ) : null}
 

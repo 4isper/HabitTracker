@@ -50,6 +50,10 @@ export const es = {
     namePlaceholder: 'Por ejemplo: beber agua',
     emojiLabel: 'Icono (opcional)',
     colorLabel: 'Color (opcional)',
+    reminderLabel: 'Recordatorio',
+    reminderEnabled: 'Todos los días a las {{time}}',
+    reminderDisabled: 'Sin recordatorio',
+    reminderPick: 'Elegir hora del recordatorio',
     errors: {
       empty: 'El nombre del hábito es obligatorio',
       duplicate: 'Ya existe un hábito con este nombre',
@@ -84,6 +88,14 @@ export const es = {
     loadFailed: 'No se pudieron cargar los hábitos del almacenamiento',
     saveFailed: 'No se pudieron guardar los hábitos en el almacenamiento',
     backupFailed: 'No se pudo crear una copia de seguridad de los datos',
+  },
+  notifications: {
+    channelName: 'Recordatorios de hábitos',
+    title: 'Es hora de {{name}}',
+    body: 'Márcalo como completado para mantener tu racha.',
+    syncFailed: 'No se pudieron programar los recordatorios',
+    permissionDenied:
+      'No se ha concedido el permiso de notificaciones. Los recordatorios no llegarán.',
   },
   errorBoundary: {
     title: 'Algo ha salido mal',

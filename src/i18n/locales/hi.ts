@@ -50,6 +50,10 @@ export const hi = {
     namePlaceholder: 'उदाहरण: पानी पीना',
     emojiLabel: 'आइकन (वैकल्पिक)',
     colorLabel: 'रंग (वैकल्पिक)',
+    reminderLabel: 'अनुस्मारक',
+    reminderEnabled: 'हर दिन {{time}} बजे',
+    reminderDisabled: 'कोई अनुस्मारक नहीं',
+    reminderPick: 'अनुस्मारक का समय चुनें',
     errors: {
       empty: 'आदत का नाम आवश्यक है',
       duplicate: 'इस नाम वाली आदत पहले से मौजूद है',
@@ -83,6 +87,14 @@ export const hi = {
     loadFailed: 'स्टोरेज से आदतें लोड नहीं हो सकीं',
     saveFailed: 'स्टोरेज में आदतें सहेजी नहीं जा सकीं',
     backupFailed: 'डेटा का बैकअप नहीं बनाया जा सका',
+  },
+  notifications: {
+    channelName: 'आदत अनुस्मारक',
+    title: '{{name}} का समय',
+    body: 'अपनी लगातार बनाए रखने के लिए इसे पूरा चिह्नित करें।',
+    syncFailed: 'अनुस्मारक निर्धारित नहीं किए जा सके',
+    permissionDenied:
+      'सूचनाओं की अनुमति नहीं दी गई है। अनुस्मारक नहीं भेजे जाएँगे।',
   },
   errorBoundary: {
     title: 'कुछ गलत हो गया',

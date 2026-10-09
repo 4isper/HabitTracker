@@ -9,6 +9,8 @@ import {
   View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { uses24HourClock } from 'react-native-localize';
 
 import { Touchable } from './Touchable';
 import { EMOJI_OPTIONS, COLOR_OPTIONS } from '../constants/habitOptions';
@@ -16,7 +18,13 @@ import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
 import { radii } from '../theme/radii';
 import { emojiSize, text } from '../theme/typography';
+import {
+  formatReminderTime,
+  formatReminderTimeForDisplay,
+  parseReminderTime,
+} from '../utils/time';
 
+import type { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import type {
   CreateHabitInput,
   UpdateHabitError,
@@ -34,9 +42,11 @@ type HabitFormProps = {
     name: string;
     emoji?: string;
     color?: string;
+    reminderTime?: string;
   };
   submitLabel: string;
   onSubmit: (input: CreateHabitInput) => UpdateHabitResult;
+  onReminderRequested: () => Promise<boolean>;
   onCancel: () => void;
 };
 
@@ -44,6 +54,7 @@ export function HabitForm({
   initialValues,
   submitLabel,
   onSubmit,
+  onReminderRequested,
   onCancel,
 }: HabitFormProps) {
   const theme = useAppTheme();
@@ -53,16 +64,30 @@ export function HabitForm({
   const [emoji, setEmoji] = useState<string | undefined>(
     initialValues?.emoji
   );
-  const [color, setColor] = useState<string | undefined>(
-    initialValues?.color
+const [color, setColor] = useState<string | undefined>(initialValues?.color);
+  const [reminderTime, setReminderTime] = useState<string | undefined>(
+    initialValues?.reminderTime,
   );
+  const [pickerOpen, setPickerOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+
+  const use24Hour = uses24HourClock();
+
+  const pickerValue = (() => {
+    const { hours, minutes } = parseReminderTime(reminderTime ?? '09:00');
+    const date = new Date();
+
+    date.setHours(hours, minutes, 0, 0);
+
+    return date;
+  })();
 
   const handleSubmit = () => {
     const result = onSubmit({
       name,
       emoji,
       color,
+      reminderTime,
     });
 
     if (!result.success) {
@@ -76,6 +101,39 @@ export function HabitForm({
     }
 
     setFormError(null);
+  };
+
+  const handleToggleReminder = () => {
+    if (reminderTime) {
+      setReminderTime(undefined);
+      setPickerOpen(false);
+
+      return;
+    }
+
+    onReminderRequested().then(granted => {
+      if (granted) {
+        setReminderTime('09:00');
+        setPickerOpen(true);
+      }
+    });
+  };
+
+  const handlePickerChange = (
+    event: DateTimePickerEvent,
+    selected?: Date,
+  ) => {
+    if (Platform.OS === 'android') {
+      setPickerOpen(false);
+    }
+
+    if (event.type === 'dismissed' || !selected) {
+      return;
+    }
+
+    setReminderTime(
+      formatReminderTime(selected.getHours(), selected.getMinutes()),
+    );
   };
 
   return (
@@ -215,6 +273,76 @@ export function HabitForm({
           })}
         </View>
 
+        <Text
+          style={[
+            styles.label,
+            {
+              color: theme.colors.textMuted,
+            },
+          ]}
+        >
+          {t('habitForm.reminderLabel')}
+        </Text>
+
+        <View style={styles.reminderRow}>
+          <Touchable
+            animateScale
+            accessibilityRole="switch"
+            accessibilityState={{ checked: Boolean(reminderTime) }}
+            accessibilityLabel={t('habitForm.reminderPick')}
+            style={[
+              styles.reminderToggle,
+              {
+                backgroundColor: reminderTime
+                  ? theme.colors.primary
+                  : theme.colors.surface,
+                borderColor: reminderTime
+                  ? theme.colors.primary
+                  : theme.colors.border,
+              },
+            ]}
+            onPress={handleToggleReminder}
+          >
+            <Text
+              style={[
+                styles.reminderToggleText,
+                {
+                  color: reminderTime
+                    ? theme.colors.primaryText
+                    : theme.colors.textMuted,
+                },
+              ]}
+            >
+              {reminderTime
+                ? t('habitForm.reminderEnabled', {
+                    time: formatReminderTimeForDisplay(reminderTime, use24Hour),
+                  })
+                : t('habitForm.reminderDisabled')}
+            </Text>
+          </Touchable>
+
+          {reminderTime ? (
+            <Touchable
+              style={[styles.reminderEdit, { backgroundColor: theme.colors.control }]}
+              onPress={() => setPickerOpen(true)}
+            >
+              <Text style={[styles.reminderEditText, { color: theme.colors.text }]}>
+                {formatReminderTimeForDisplay(reminderTime, use24Hour)}
+              </Text>
+            </Touchable>
+          ) : null}
+        </View>
+
+        {pickerOpen ? (
+          <DateTimePicker
+            value={pickerValue}
+            mode="time"
+            display={use24Hour ? 'clock' : 'spinner'}
+            is24Hour={use24Hour}
+            onChange={handlePickerChange}
+          />
+        ) : null}
+
         <Touchable
           animateScale
           style={[
@@ -313,6 +441,30 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderWidth: 2,
     borderColor: 'transparent',
+  },
+  reminderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: spacing.xxl,
+  },
+  reminderToggle: {
+    flex: 1,
+    borderRadius: radii.control,
+    borderWidth: 1,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    marginRight: spacing.sm,
+  },
+  reminderToggleText: {
+    ...text.label,
+  },
+  reminderEdit: {
+    borderRadius: radii.control,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+  },
+  reminderEditText: {
+    ...text.label,
   },
   submitButton: {
     borderRadius: radii.card,

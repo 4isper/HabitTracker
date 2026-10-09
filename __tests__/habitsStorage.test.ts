@@ -83,6 +83,30 @@ describe('loadHabits on valid payloads', () => {
 
     expect(loadHabits()).toEqual({ habits, status: 'ok' });
   });
+
+  it('round-trips a reminder time', () => {
+    saveHabits([validHabit({ reminderTime: '09:30' })]);
+
+    expect(loadHabits()).toEqual({
+      habits: [validHabit({ reminderTime: '09:30' })],
+      status: 'ok',
+    });
+  });
+
+  it('drops a malformed reminder time instead of trusting it', () => {
+    seed([validHabit({ reminderTime: '25:00' })]);
+
+    const result = loadHabits();
+
+    expect(result.status).toBe('repaired');
+    expect(result.habits[0].reminderTime).toBeUndefined();
+  });
+
+  it('treats a non-string reminder time as absent', () => {
+    seed([validHabit({ reminderTime: 930 } as unknown as Partial<Habit>)]);
+
+    expect(loadHabits().habits[0].reminderTime).toBeUndefined();
+  });
 });
 
 describe('loadHabits schema repair', () => {

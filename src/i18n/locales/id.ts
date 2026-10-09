@@ -50,6 +50,10 @@ export const id = {
     namePlaceholder: 'Contoh: minum air putih',
     emojiLabel: 'Ikon (opsional)',
     colorLabel: 'Warna (opsional)',
+    reminderLabel: 'Pengingat',
+    reminderEnabled: 'Setiap hari pukul {{time}}',
+    reminderDisabled: 'Tanpa pengingat',
+    reminderPick: 'Pilih waktu pengingat',
     errors: {
       empty: 'Nama kebiasaan wajib diisi',
       duplicate: 'Kebiasaan dengan nama ini sudah ada',
@@ -82,6 +86,14 @@ export const id = {
     loadFailed: 'Gagal memuat kebiasaan dari penyimpanan',
     saveFailed: 'Gagal menyimpan kebiasaan ke penyimpanan',
     backupFailed: 'Gagal mencadangkan data',
+  },
+  notifications: {
+    channelName: 'Pengingat kebiasaan',
+    title: 'Waktunya untuk {{name}}',
+    body: 'Tandai selesai untuk menjaga rentetan Anda.',
+    syncFailed: 'Tidak dapat menjadwalkan pengingat',
+    permissionDenied:
+      'Izin notifikasi tidak diberikan. Pengingat tidak akan sampai.',
   },
   errorBoundary: {
     title: 'Terjadi kesalahan',
