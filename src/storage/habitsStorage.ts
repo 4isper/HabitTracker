@@ -1,6 +1,7 @@
 import { createMMKV } from 'react-native-mmkv';
 
 import i18n from '../i18n';
+import { isValidDateKey } from '../utils/date';
 import { isValidReminderTime } from '../utils/time';
 
 import type { Habit } from '../types/habit';
@@ -10,8 +11,6 @@ const SCHEMA_VERSION_KEY = 'habits.schemaVersion';
 const RAW_BACKUP_KEY = 'habits.rawBackup';
 
 const CURRENT_SCHEMA_VERSION = 2;
-
-const DATE_KEY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
 const storage = createMMKV();
 
@@ -49,7 +48,7 @@ function sanitizeCompletedDates(value: unknown): {
   const dates = new Set<string>();
 
   for (const entry of value) {
-    if (typeof entry === 'string' && DATE_KEY_PATTERN.test(entry)) {
+    if (isValidDateKey(entry)) {
       dates.add(entry);
     }
   }

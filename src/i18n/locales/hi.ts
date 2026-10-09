@@ -88,6 +88,14 @@ export const hi = {
     saveFailed: 'स्टोरेज में आदतें सहेजी नहीं जा सकीं',
     backupFailed: 'डेटा का बैकअप नहीं बनाया जा सका',
   },
+  habitCalendar: {
+    previousMonth: 'पिछला महीना',
+    nextMonth: 'अगला महीना',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'पूरी हुई',
+    dayPending: 'अधूरी',
+    dayFuture: 'भविष्य की तिथि',
+  },
   notifications: {
     channelName: 'आदत अनुस्मारक',
     title: '{{name}} का समय',

@@ -9,6 +9,8 @@ import * as ReactNativeMMKV from 'react-native-mmkv';
 import * as Notifee from '@notifee/react-native';
 
 import { HabitsProvider, useHabits } from '../src/state/HabitsContext';
+import { getTodayKey } from '../src/utils/date';
+import { getCompletionRate } from '../src/utils/stats';
 
 import type { ReactTestRenderer } from 'react-test-renderer';
 
@@ -276,6 +278,174 @@ describe('HabitsProvider reminders', () => {
     await renderProviderAsync();
 
     expect(scheduledIds()).toEqual(['habit-reminder-a1']);
+  });
+});
+
+describe('HabitsProvider toggleDate', () => {
+  const TODAY = getTodayKey();
+
+  function withDates(...dates: string[]) {
+    store.set(
+      HABITS_KEY,
+      JSON.stringify([
+        {
+          id: 'a1',
+          name: 'Пить воду',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          completedDates: dates,
+        },
+      ]),
+    );
+  }
+
+  function completed() {
+    return api!.habits[0].completedDates;
+  }
+
+  it('marks an arbitrary past day', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-05');
+    });
+
+    expect(completed()).toContain('2026-01-05');
+  });
+
+  it('unmarks a day that is already marked', () => {
+    withDates('2026-01-05');
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-05');
+    });
+
+    expect(completed()).not.toContain('2026-01-05');
+  });
+
+  it('keeps completedDates sorted so calendar keys stay ordered', () => {
+    withDates('2026-01-20', '2026-01-02');
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-10');
+    });
+
+    expect(completed()).toEqual(['2026-01-02', '2026-01-10', '2026-01-20']);
+  });
+
+  it('refuses to mark a future day', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2999-01-01');
+    });
+
+    expect(completed()).toEqual([]);
+  });
+
+  it('allows marking today', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', TODAY);
+    });
+
+    expect(completed()).toContain(TODAY);
+  });
+
+  it('refuses to mark a day before the habit was created', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2025-12-31');
+      api?.toggleDate('a1', '2025-06-01');
+    });
+
+    expect(completed()).toEqual([]);
+  });
+
+  it('allows marking the creation day itself', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-01');
+    });
+
+    expect(completed()).toContain('2026-01-01');
+  });
+
+  it('keeps the completion rate at or below 100 after back-filling', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-05');
+      api?.toggleDate('a1', '2026-01-06');
+      api?.toggleDate('a1', '2026-01-07');
+    });
+
+    const habit = api!.habits[0];
+
+    expect(
+      getCompletionRate(habit.completedDates, habit.createdAt),
+    ).toBeLessThanOrEqual(100);
+  });
+
+  it('ignores a malformed date key', () => {
+    withDates();
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', 'broken');
+      api?.toggleDate('a1', '2026-1-5');
+      api?.toggleDate('a1', '');
+    });
+
+    expect(completed()).toEqual([]);
+  });
+
+  it('leaves other habits untouched', () => {
+    store.set(
+      HABITS_KEY,
+      JSON.stringify([
+        {
+          id: 'a1',
+          name: 'Первая',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          completedDates: [],
+        },
+        {
+          id: 'a2',
+          name: 'Вторая',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          completedDates: [],
+        },
+      ]),
+    );
+
+    renderProvider();
+
+    act(() => {
+      api?.toggleDate('a1', '2026-01-05');
+    });
+
+    expect(api?.habits[0].completedDates).toEqual(['2026-01-05']);
+    expect(api?.habits[1].completedDates).toEqual([]);
   });
 });
 

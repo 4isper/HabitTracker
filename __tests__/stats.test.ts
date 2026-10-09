@@ -120,6 +120,27 @@ describe('getCompletionRate', () => {
     expect(getCompletionRate([TODAY, TODAY, TODAY], TODAY, TODAY)).toBe(100);
   });
 
+  it('never exceeds 100 when completions fall outside the tracked window', () => {
+    const completed = [
+      '2026-01-01',
+      '2026-01-02',
+      '2026-01-03',
+      '2026-01-10',
+      '2026-01-11',
+      '2026-01-12',
+      '2026-01-15',
+    ];
+
+    // Seven completions against a two-day-old habit would otherwise be 350%.
+    expect(getCompletionRate(completed, '2026-01-14', TODAY)).toBe(100);
+  });
+
+  it('is 100 when every tracked day is completed', () => {
+    const completed = ['2026-01-14', '2026-01-15'];
+
+    expect(getCompletionRate(completed, '2026-01-14', TODAY)).toBe(100);
+  });
+
   it('is 0 when the habit was created in the future', () => {
     expect(getCompletionRate([], shiftDays(TODAY, 5), TODAY)).toBe(0);
   });

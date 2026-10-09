@@ -90,6 +90,14 @@ export const ru = {
     saveFailed: 'Не удалось сохранить привычки в хранилище',
     backupFailed: 'Не удалось сделать резервную копию данных',
   },
+  habitCalendar: {
+    previousMonth: 'Предыдущий месяц',
+    nextMonth: 'Следующий месяц',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'выполнено',
+    dayPending: 'не выполнено',
+    dayFuture: 'будущая дата',
+  },
   notifications: {
     channelName: 'Напоминания о привычках',
     title: 'Пора: {{name}}',

@@ -87,6 +87,14 @@ export const id = {
     saveFailed: 'Gagal menyimpan kebiasaan ke penyimpanan',
     backupFailed: 'Gagal mencadangkan data',
   },
+  habitCalendar: {
+    previousMonth: 'Bulan sebelumnya',
+    nextMonth: 'Bulan berikutnya',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'selesai',
+    dayPending: 'belum selesai',
+    dayFuture: 'tanggal mendatang',
+  },
   notifications: {
     channelName: 'Pengingat kebiasaan',
     title: 'Waktunya untuk {{name}}',

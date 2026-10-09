@@ -94,7 +94,9 @@ export function getCompletionRate(
 
   const uniqueCompleted = new Set(completedDates).size;
 
-  return Math.round((uniqueCompleted / trackedDays) * 100);
+  // The numerator counts every stored date, so persisted entries that fall
+  // outside the tracked window could otherwise push the rate past 100%.
+  return Math.min(100, Math.round((uniqueCompleted / trackedDays) * 100));
 }
 
 export function getHabitStats(

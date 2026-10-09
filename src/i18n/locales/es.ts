@@ -89,6 +89,14 @@ export const es = {
     saveFailed: 'No se pudieron guardar los hábitos en el almacenamiento',
     backupFailed: 'No se pudo crear una copia de seguridad de los datos',
   },
+  habitCalendar: {
+    previousMonth: 'Mes anterior',
+    nextMonth: 'Mes siguiente',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'completado',
+    dayPending: 'no completado',
+    dayFuture: 'fecha futura',
+  },
   notifications: {
     channelName: 'Recordatorios de hábitos',
     title: 'Es hora de {{name}}',

@@ -88,6 +88,14 @@ export const en = {
     saveFailed: 'Could not save habits to storage',
     backupFailed: 'Could not back up your data',
   },
+  habitCalendar: {
+    previousMonth: 'Previous month',
+    nextMonth: 'Next month',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'done',
+    dayPending: 'not done',
+    dayFuture: 'upcoming date',
+  },
   notifications: {
     channelName: 'Habit reminders',
     title: 'Time for {{name}}',

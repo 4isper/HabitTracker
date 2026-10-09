@@ -25,7 +25,7 @@ import {
   requestNotificationPermission,
   syncHabitReminders,
 } from '../notifications/reminders';
-import { getTodayKey } from '../utils/date';
+import { formatDateKey, getTodayKey, isValidDateKey } from '../utils/date';
 import { createId } from '../utils/id';
 
 type HabitsContextValue = {
@@ -34,6 +34,7 @@ type HabitsContextValue = {
   reminderError: string | null;
   addHabit: (input: CreateHabitInput) => AddHabitResult;
   toggleToday: (habitId: string) => void;
+  toggleDate: (habitId: string, dateKey: string) => void;
   deleteHabit: (habitId: string) => void;
   isDuplicateName: (name: string, excludeId?: string) => boolean;
   getHabitById: (habitId: string) => Habit | undefined;
@@ -240,6 +241,37 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
     );
   }, []);
 
+  const toggleDate = useCallback((habitId: string, dateKey: string) => {
+    const todayKey = getTodayKey();
+
+    if (!isValidDateKey(dateKey) || dateKey > todayKey) {
+      return;
+    }
+
+    setHabits((prevHabits) =>
+      prevHabits.map((habit) => {
+        if (habit.id !== habitId) {
+          return habit;
+        }
+
+        // A habit cannot be completed on a day it did not exist, and marking
+        // one would inflate the rate above 100%.
+        if (dateKey < formatDateKey(new Date(habit.createdAt))) {
+          return habit;
+        }
+
+        const alreadyCompleted = habit.completedDates.includes(dateKey);
+
+        return {
+          ...habit,
+          completedDates: alreadyCompleted
+            ? habit.completedDates.filter(date => date !== dateKey)
+            : [...habit.completedDates, dateKey].sort(),
+        };
+      }),
+    );
+  }, []);
+
   const deleteHabit = useCallback((habitId: string) => {
     setHabits((prevHabits) =>
       prevHabits.filter((habit) => habit.id !== habitId)
@@ -258,6 +290,7 @@ const value = useMemo(
       reminderError,
       addHabit,
       toggleToday,
+      toggleDate,
       deleteHabit,
       isDuplicateName,
       getHabitById,
@@ -270,6 +303,7 @@ const value = useMemo(
       reminderError,
       addHabit,
       toggleToday,
+      toggleDate,
       deleteHabit,
       isDuplicateName,
       getHabitById,

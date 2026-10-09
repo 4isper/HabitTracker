@@ -89,6 +89,14 @@ export const pt = {
     saveFailed: 'Não foi possível salvar os hábitos no armazenamento',
     backupFailed: 'Não foi possível fazer o backup dos dados',
   },
+  habitCalendar: {
+    previousMonth: 'Mês anterior',
+    nextMonth: 'Próximo mês',
+    dayA11y: '{{date}}, {{status}}',
+    dayCompleted: 'concluído',
+    dayPending: 'não concluído',
+    dayFuture: 'data futura',
+  },
   notifications: {
     channelName: 'Lembretes de hábitos',
     title: 'Hora de {{name}}',

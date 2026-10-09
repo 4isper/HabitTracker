@@ -1,4 +1,4 @@
-import { Alert, FlatList, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -8,9 +8,9 @@ import { ScreenHeader } from '../components/ScreenHeader';
 import { Touchable } from '../components/Touchable';
 import { ProgressBar } from '../components/ProgressBar';
 import { StatsRow } from '../components/StatsRow';
+import { HabitCalendar } from '../components/HabitCalendar';
 import { useHabits } from '../state/HabitsContext';
 import { useTodayKey } from '../hooks/useTodayKey';
-import { formatDateForDisplay } from '../utils/date';
 import { getHabitStats } from '../utils/stats';
 import { controlPadding, spacing } from '../theme/spacing';
 import { useAppTheme } from '../theme/appTheme';
@@ -30,7 +30,12 @@ export function HabitDetailsScreen({
 }: HabitDetailsScreenProps) {
   const { habitId } = route.params;
 
-  const { getHabitById, toggleToday, deleteHabit } = useHabits();
+  const {
+    getHabitById,
+    toggleToday,
+    toggleDate,
+    deleteHabit,
+  } = useHabits();
   const theme = useAppTheme();
   const { t } = useTranslation();
   const todayKey = useTodayKey();
@@ -49,8 +54,6 @@ export function HabitDetailsScreen({
   }
 
   const completedToday = habit.completedDates.includes(todayKey);
-
-  const history = [...habit.completedDates].sort((a, b) => b.localeCompare(a));
 
   const stats = getHabitStats(habit.completedDates, habit.createdAt, todayKey);
 
@@ -82,187 +85,153 @@ export function HabitDetailsScreen({
         onBack={() => navigation.goBack()}
       />
 
-      <FlatList
-        style={styles.historyList}
-        data={history}
-        keyExtractor={item => item}
-        contentContainerStyle={styles.historyListContent}
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View>
-            <View
-              style={[
-                styles.headerCard,
-                {
-                  backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
-                  borderLeftColor: habit.color ?? theme.colors.textMuted,
-                },
-              ]}
-            >
-              <Text style={styles.emoji}>{habit.emoji || '🌱'}</Text>
+      >
+        <View
+          style={[
+            styles.headerCard,
+            {
+              backgroundColor: theme.colors.surface,
+              borderColor: theme.colors.border,
+              borderLeftColor: habit.color ?? theme.colors.textMuted,
+            },
+          ]}
+        >
+          <Text style={styles.emoji}>{habit.emoji || '🌱'}</Text>
 
-              <Text
-                style={[
-                  styles.name,
-                  {
-                    color: theme.colors.text,
-                  },
-                ]}
-              >
-                {habit.name}
-              </Text>
-
-              <Text
-                style={[
-                  styles.status,
-                  {
-                    color: theme.colors.textMuted,
-                  },
-                ]}
-              >
-                {t(
-                  completedToday
-                    ? 'habitDetails.statusCompleted'
-                    : 'habitDetails.statusPending',
-                )}
-              </Text>
-
-              <ProgressBar progress={stats.completionRate} />
-
-              <StatsRow stats={stats} />
-            </View>
-
-            <Touchable
-              animateScale
-              style={[
-                styles.toggleButton,
-                {
-                  backgroundColor: theme.colors.success,
-                },
-              ]}
-              onPress={() => toggleToday(habit.id)}
-            >
-              <Text
-                style={[
-                  styles.toggleButtonText,
-                  {
-                    color: theme.colors.primaryText,
-                  },
-                ]}
-              >
-                {t(
-                  completedToday
-                    ? 'habitDetails.unmarkToday'
-                    : 'habitDetails.markToday',
-                )}
-              </Text>
-            </Touchable>
-
-            <Touchable
-              style={[
-                styles.editButton,
-                {
-                  backgroundColor: theme.colors.control,
-                },
-              ]}
-              onPress={() =>
-                navigation.navigate('EditHabit', {
-                  habitId: habit.id,
-                })
-              }
-            >
-              <Text
-                style={[
-                  styles.editButtonText,
-                  {
-                    color: theme.colors.text,
-                  },
-                ]}
-              >
-                {t('habitDetails.edit')}
-              </Text>
-            </Touchable>
-
-            <Touchable
-              style={[
-                styles.deleteButton,
-                {
-                  backgroundColor: theme.colors.danger,
-                },
-              ]}
-              onPress={handleDelete}
-            >
-              <Text
-                style={[
-                  styles.deleteButtonText,
-                  {
-                    color: theme.colors.primaryText,
-                  },
-                ]}
-              >
-                {t('habitDetails.delete')}
-              </Text>
-            </Touchable>
-
-            <Text
-              style={[
-                styles.historyTitle,
-                {
-                  color: theme.colors.text,
-                },
-              ]}
-            >
-              {t('habitDetails.historyTitle')}
-            </Text>
-          </View>
-        }
-        renderItem={({ item }) => (
-          <View
+          <Text
             style={[
-              styles.historyItem,
+              styles.name,
               {
-                backgroundColor: theme.colors.surface,
-                borderColor: theme.colors.border,
+                color: theme.colors.text,
               },
             ]}
           >
-            <Text
-              style={[
-                styles.historyDate,
-                {
-                  color: theme.colors.text,
-                },
-              ]}
-            >
-              {formatDateForDisplay(item)}
-            </Text>
+            {habit.name}
+          </Text>
 
-            <Text
-              style={[
-                styles.historyStatus,
-                {
-                  color: theme.colors.success,
-                },
-              ]}
-            >
-              {t('habitDetails.historyItemStatus')}
-            </Text>
-          </View>
-        )}
-        ListEmptyComponent={
           <Text
             style={[
-              styles.emptyHistory,
+              styles.status,
               {
                 color: theme.colors.textMuted,
               },
             ]}
           >
-            {t('habitDetails.emptyHistory')}
+            {t(
+              completedToday
+                ? 'habitDetails.statusCompleted'
+                : 'habitDetails.statusPending',
+            )}
           </Text>
-        }
-      />
+
+          <ProgressBar progress={stats.completionRate} />
+
+          <StatsRow stats={stats} />
+        </View>
+
+        <Touchable
+          animateScale
+          style={[
+            styles.toggleButton,
+            {
+              backgroundColor: theme.colors.success,
+            },
+          ]}
+          onPress={() => toggleToday(habit.id)}
+        >
+          <Text
+            style={[
+              styles.toggleButtonText,
+              {
+                color: theme.colors.primaryText,
+              },
+            ]}
+          >
+            {t(
+              completedToday
+                ? 'habitDetails.unmarkToday'
+                : 'habitDetails.markToday',
+            )}
+          </Text>
+        </Touchable>
+
+        <Touchable
+          style={[
+            styles.editButton,
+            {
+              backgroundColor: theme.colors.control,
+            },
+          ]}
+          onPress={() =>
+            navigation.navigate('EditHabit', {
+              habitId: habit.id,
+            })
+          }
+        >
+          <Text
+            style={[
+              styles.editButtonText,
+              {
+                color: theme.colors.text,
+              },
+            ]}
+          >
+            {t('habitDetails.edit')}
+          </Text>
+        </Touchable>
+
+        <Touchable
+          style={[
+            styles.deleteButton,
+            {
+              backgroundColor: theme.colors.danger,
+            },
+          ]}
+          onPress={handleDelete}
+        >
+          <Text
+            style={[
+              styles.deleteButtonText,
+              {
+                color: theme.colors.primaryText,
+              },
+            ]}
+          >
+            {t('habitDetails.delete')}
+          </Text>
+        </Touchable>
+
+        <Text
+          style={[
+            styles.historyTitle,
+            {
+              color: theme.colors.text,
+            },
+          ]}
+        >
+          {t('habitDetails.historyTitle')}
+        </Text>
+
+        <View
+          style={[
+            styles.calendarCard,
+            {
+              backgroundColor: theme.colors.surface,
+              borderColor: theme.colors.border,
+            },
+          ]}
+        >
+          <HabitCalendar
+            completedDates={habit.completedDates}
+            createdAt={habit.createdAt}
+            onToggleDate={dateKey => toggleDate(habit.id, dateKey)}
+          />
+        </View>
+      </ScrollView>
     </Screen>
   );
 }
@@ -318,30 +287,15 @@ const styles = StyleSheet.create({
     ...text.title,
     marginBottom: spacing.md,
   },
-  historyList: {
+  content: {
     flex: 1,
   },
-  historyListContent: {
-    flexGrow: 1,
+  contentContainer: {
     paddingBottom: spacing.huge,
   },
-  historyItem: {
-    borderRadius: radii.control,
+  calendarCard: {
+    borderRadius: radii.card,
     borderWidth: 1,
-    padding: spacing.lg,
-    marginBottom: spacing.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  historyDate: {
-    ...text.body,
-  },
-  historyStatus: {
-    ...text.captionStrong,
-  },
-  emptyHistory: {
-    ...text.bodySm,
-    marginTop: spacing.md,
+    padding: spacing.md,
   },
 });
