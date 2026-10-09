@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 
@@ -21,6 +22,7 @@ import type {
 
 import { loadHabits, saveHabits } from '../storage/habitsStorage';
 import { getTodayKey } from '../utils/date';
+import { createId } from '../utils/id';
 
 type HabitsContextValue = {
   habits: Habit[];
@@ -38,10 +40,24 @@ const HabitsContext = createContext<HabitsContextValue | undefined>(undefined);
 export function HabitsProvider({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
 
-  const [habits, setHabits] = useState<Habit[]>(() => loadHabits());
+  const [initialLoad] = useState(() => loadHabits());
+  const [habits, setHabits] = useState<Habit[]>(initialLoad.habits);
   const [saveError, setSaveError] = useState<string | null>(null);
 
+  /**
+   * A failed load means storage held data we could not parse and `habits` is an
+   * empty placeholder, not the truth. Persisting it on mount would overwrite
+   * the only copy of the user's data, so the first effect is skipped and only
+   * real user-driven changes write back.
+   */
+  const skipNextPersistRef = useRef(initialLoad.status === 'failed');
+
   useEffect(() => {
+    if (skipNextPersistRef.current) {
+      skipNextPersistRef.current = false;
+      return;
+    }
+
     const ok = saveHabits(habits);
 
     setSaveError(ok ? null : t('storage.saveError'));
@@ -83,7 +99,7 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
       }
 
       const habit: Habit = {
-        id: Date.now().toString(),
+        id: createId(),
         name,
         emoji: input.emoji?.trim() || undefined,
         color: input.color || undefined,
@@ -91,7 +107,15 @@ export function HabitsProvider({ children }: { children: ReactNode }) {
         completedDates: [],
       };
 
-      setHabits((prevHabits) => [habit, ...prevHabits]);
+      setHabits((prevHabits) => {
+        let candidate = habit;
+
+        while (prevHabits.some(existing => existing.id === candidate.id)) {
+          candidate = { ...candidate, id: createId() };
+        }
+
+        return [candidate, ...prevHabits];
+      });
 
       return {
         success: true,

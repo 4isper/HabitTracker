@@ -1,0 +1,219 @@
+/**
+ * @format
+ */
+
+import { Text } from 'react-native';
+import { act, create } from 'react-test-renderer';
+
+import * as ReactNativeMMKV from 'react-native-mmkv';
+
+import { HabitsProvider, useHabits } from '../src/state/HabitsContext';
+
+import type { ReactTestRenderer } from 'react-test-renderer';
+
+jest.mock('react-native-mmkv', () => {
+  const data = new Map<string, unknown>();
+
+  return {
+    __data: data,
+    createMMKV: () => ({
+      getString: (key: string) => {
+        const value = data.get(key);
+
+        return typeof value === 'string' ? value : undefined;
+      },
+      getNumber: (key: string) => {
+        const value = data.get(key);
+
+        return typeof value === 'number' ? value : undefined;
+      },
+      set: (key: string, value: unknown) => {
+        data.set(key, value);
+      },
+      remove: (key: string) => data.delete(key),
+    }),
+  };
+});
+
+const store = (
+  ReactNativeMMKV as unknown as { __data: Map<string, unknown> }
+).__data;
+
+const HABITS_KEY = 'habits';
+const BACKUP_KEY = 'habits.rawBackup';
+
+type HabitsApi = ReturnType<typeof useHabits>;
+
+let api: HabitsApi | null = null;
+
+function Consumer() {
+  api = useHabits();
+
+  return <Text>ok</Text>;
+}
+
+function renderProvider(): ReactTestRenderer {
+  let tree: ReactTestRenderer | undefined;
+
+  act(() => {
+    tree = create(
+      <HabitsProvider>
+        <Consumer />
+      </HabitsProvider>,
+    );
+  });
+
+  return tree as ReactTestRenderer;
+}
+
+function readPayload(): unknown {
+  const raw = store.get(HABITS_KEY);
+
+  return typeof raw === 'string' ? JSON.parse(raw) : undefined;
+}
+
+beforeEach(() => {
+  store.clear();
+  api = null;
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+describe('HabitsProvider persistence', () => {
+  it('does not overwrite unreadable storage on mount', () => {
+    store.set(HABITS_KEY, '{ not json');
+
+    renderProvider();
+
+    expect(store.get(HABITS_KEY)).toBe('{ not json');
+    expect(store.get(BACKUP_KEY)).toBe('{ not json');
+    expect(api?.habits).toEqual([]);
+  });
+
+  it('still persists explicit user changes after a failed load', () => {
+    store.set(HABITS_KEY, '{ not json');
+
+    renderProvider();
+
+    act(() => {
+      api?.addHabit({ name: 'Пить воду' });
+    });
+
+    const persisted = readPayload() as Array<{ name: string }>;
+
+    expect(persisted).toHaveLength(1);
+    expect(persisted[0].name).toBe('Пить воду');
+  });
+
+  it('self-heals a repairable payload on mount', () => {
+    store.set(
+      HABITS_KEY,
+      JSON.stringify([
+        { id: 'a1', name: 'Пить воду', createdAt: '2026-01-01T00:00:00.000Z' },
+      ]),
+    );
+
+    renderProvider();
+
+    const persisted = readPayload() as Array<{
+      name: string;
+      completedDates: string[];
+    }>;
+
+    expect(persisted).toHaveLength(1);
+    expect(persisted[0].name).toBe('Пить воду');
+    expect(persisted[0].completedDates).toEqual([]);
+    expect(store.get(BACKUP_KEY)).toContain('Пить воду');
+  });
+
+  it('writes unchanged storage back without a backup', () => {
+    const payload = JSON.stringify([
+      {
+        id: 'a1',
+        name: 'Пить воду',
+        createdAt: '2026-01-01T00:00:00.000Z',
+        completedDates: ['2026-01-01'],
+      },
+    ]);
+
+    store.set(HABITS_KEY, payload);
+
+    renderProvider();
+
+    expect(readPayload()).toEqual(JSON.parse(payload));
+    expect(store.get(BACKUP_KEY)).toBeUndefined();
+  });
+});
+
+describe('HabitsProvider id generation', () => {
+  it('never stores two habits with the same id', () => {
+    jest.spyOn(Date, 'now').mockReturnValue(1767225600000);
+    jest.spyOn(Math, 'random').mockReturnValue(0.5);
+
+    renderProvider();
+
+    act(() => {
+      api?.addHabit({ name: 'Первая' });
+    });
+    act(() => {
+      api?.addHabit({ name: 'Вторая' });
+    });
+    act(() => {
+      api?.addHabit({ name: 'Третья' });
+    });
+
+    const persisted = readPayload() as Array<{ id: string }>;
+    const ids = new Set(persisted.map(habit => habit.id));
+
+    expect(persisted).toHaveLength(3);
+    expect(ids.size).toBe(3);
+  });
+
+  it('keeps mutations scoped to a single habit', () => {
+    renderProvider();
+
+    act(() => {
+      api?.addHabit({ name: 'Первая' });
+    });
+    act(() => {
+      api?.addHabit({ name: 'Вторая' });
+    });
+
+    const [first, second] = api!.habits;
+
+    act(() => {
+      api?.toggleToday(first.id);
+    });
+
+    expect(api?.habits.find(habit => habit.id === first.id)?.completedDates)
+      .toHaveLength(1);
+    expect(api?.habits.find(habit => habit.id === second.id)?.completedDates)
+      .toHaveLength(0);
+  });
+
+  it('deletes only the requested habit', () => {
+    renderProvider();
+
+    act(() => {
+      api?.addHabit({ name: 'Первая' });
+    });
+    act(() => {
+      api?.addHabit({ name: 'Вторая' });
+    });
+
+    const target = api!.habits[0];
+
+    act(() => {
+      api?.deleteHabit(target.id);
+    });
+
+    expect(api?.habits.map(habit => habit.name)).toEqual([
+      api!.habits[0].name,
+    ]);
+    expect(api?.habits).toHaveLength(1);
+    expect(api?.habits[0].id).not.toBe(target.id);
+  });
+});
